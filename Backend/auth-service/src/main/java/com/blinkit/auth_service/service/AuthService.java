@@ -5,6 +5,9 @@ import com.blinkit.auth_service.dto.LoginRequest;
 import com.blinkit.auth_service.dto.RegisterRequest;
 import com.blinkit.auth_service.entity.Role;
 import com.blinkit.auth_service.entity.User;
+import com.blinkit.auth_service.exception.InvalidCredentialsException;
+import com.blinkit.auth_service.exception.UserAlreadyExistsException;
+import com.blinkit.auth_service.exception.UserNotFoundException;
 import com.blinkit.auth_service.repository.UserRepository;
 import com.blinkit.auth_service.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +23,7 @@ public class AuthService {
 
     public void register (RegisterRequest registerRequest){
         if(userRepository.findByEmail(registerRequest.getEmail()).isPresent()){
-            throw new RuntimeException("User already exists");
+            throw new UserAlreadyExistsException("Email already registered");
         }
 
         User user = new User();
@@ -33,9 +36,9 @@ public class AuthService {
 
     public AuthResponse login (LoginRequest loginRequest){
         User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(()->new RuntimeException("Invalid credentials"));
+                .orElseThrow(()->new UserNotFoundException("User not found"));
         if(!passwordEncoder.matches(loginRequest.getPassword(),user.getPassword())){
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid email or password");
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
