@@ -17,6 +17,10 @@ spring:
           uri: http://localhost:9003
           predicates:
             - Path=/orders/**
+        - id: cart-service
+          uri: http://localhost:9004
+          predicates:
+            - Path=/cart/**
 jwt:
   secret: q3B9KzL7a5hR6mJ2v1W8dF3eU0pX9yZ7b4sT6uV1xY2zA8wC0dL5fG7hQ9rM1nO2
   expiration: 86400000

@@ -29,7 +29,7 @@ public class Product {
 
     private Boolean available;
 
-    @ManyToOne
-    @JoinColumn(name = "categoryId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "categoryId", nullable = false)
     private Category category;
 }
