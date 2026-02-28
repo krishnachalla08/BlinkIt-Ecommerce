@@ -1,5 +1,6 @@
 package com.blinkit.auth_service.security;
 
+import com.blinkit.auth_service.entity.User;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -23,9 +24,10 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public String generateToken(String email){
+    public String generateToken(User user){
         return Jwts.builder()
-                .setSubject(email)
+                .setSubject(user.getEmail())
+                .claim("userId",user.getId())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis()+expiration))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)

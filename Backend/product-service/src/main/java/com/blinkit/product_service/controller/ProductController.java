@@ -4,8 +4,6 @@ import com.blinkit.product_service.dto.ProductRequest;
 import com.blinkit.product_service.dto.ProductResponse;
 import com.blinkit.product_service.service.ProductService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +22,7 @@ public class ProductController {
         return productService.getAllProducts();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{productId}")
     public ProductResponse getProduct(@PathVariable Long productId){
         return productService.getProductById(productId);
     }
@@ -40,7 +38,7 @@ public class ProductController {
     }
 
     //Pagination and search implementation start
-    @GetMapping
+    @GetMapping("/paged")
     public Page<ProductResponse> getAllProducts(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size){
@@ -56,7 +54,7 @@ public class ProductController {
         return productService.searchProducts(keyword,page,size);
     }
 
-    @GetMapping("/category/{categoryId}")
+    @GetMapping("/category/{categoryId}/paged")
     public Page<ProductResponse> getProductsByCategory(
             @PathVariable Long categoryId,
             @RequestParam(defaultValue = "0") int page,

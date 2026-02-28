@@ -17,10 +17,15 @@ public class JwtUtil {
         return Keys.hmacShaKeyFor(secret.getBytes());
     }
 
-    public void validateToken(String token) {
-        Jwts.parserBuilder()
+    public Claims validateToken(String token) {
+        return Jwts.parser()
                 .setSigningKey(getKey())
-                .build()
-                .parseClaimsJws(token);
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
+    public Long extractUserId(String token){
+        Claims claims = validateToken(token);
+        return claims.get("userId",Long.class);
     }
 }
