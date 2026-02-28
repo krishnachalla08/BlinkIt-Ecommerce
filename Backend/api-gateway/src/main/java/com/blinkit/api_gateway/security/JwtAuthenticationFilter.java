@@ -16,6 +16,7 @@ public class JwtAuthenticationFilter implements GlobalFilter {
         this.jwtUtil = jwtUtil;
     }
 
+    @Override
     public Mono<Void> filter(ServerWebExchange serverWebExchange, GatewayFilterChain gatewayFilterChain){
         String path = serverWebExchange.getRequest().getURI().getPath();
 
@@ -36,11 +37,14 @@ public class JwtAuthenticationFilter implements GlobalFilter {
 
         try{
             jwtUtil.validateToken(token);
+            Long userId = jwtUtil.extractUserId(token);
+
+            ServerWebExchange modifiedExchange = serverWebExchange.mutate()
+                    .request(builder -> builder.header("X-User-Id",String.valueOf(userId))).build();
+            return gatewayFilterChain.filter(modifiedExchange);
         }catch(Exception e){
             serverWebExchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return serverWebExchange.getResponse().setComplete();
         }
-
-        return gatewayFilterChain.filter(serverWebExchange);
     }
 }
