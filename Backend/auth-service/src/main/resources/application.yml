@@ -3,7 +3,7 @@ server:
 
 spring:
   datasource:
-    url: jdbc:sqlserver://localhost:1433;databaseName=authdb;encrypt=true;trustServerCertificate=true
+    url: jdbc:sqlserver://localhost:1433;databaseName=BlinkitDatabase_dev;encrypt=true;trustServerCertificate=true
     username: sa
     password: Krishna@08!
     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver

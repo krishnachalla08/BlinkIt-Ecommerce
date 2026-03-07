@@ -20,4 +20,6 @@ public interface ProductService {
     Page<ProductResponse> searchProducts(String keyword,int page,int size);
 
     Page<ProductResponse> getProductsByCategory(Long categoryId,int page,int size);
+
+    void reduceStock(Long productId, int quantity);
 }

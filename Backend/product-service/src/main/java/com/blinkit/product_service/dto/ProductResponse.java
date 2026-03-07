@@ -10,6 +10,7 @@ public class ProductResponse {
     public String productName;
     public BigDecimal price;
     public Boolean available;
+    public Integer quantity;
     public String categoryName;
 
 }
