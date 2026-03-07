@@ -1,0 +1,16 @@
+server:
+  port: 9002
+
+spring:
+  datasource:
+    url: jdbc:sqlserver://localhost:1433;databaseName=BlinkitDatabase_dev;encrypt=true;trustServerCertificate=true
+    username: sa
+    password: Krishna@08!
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
