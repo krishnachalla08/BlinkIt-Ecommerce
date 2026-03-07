@@ -7,6 +7,7 @@ import com.blinkit.product_service.model.Category;
 import com.blinkit.product_service.model.Product;
 import com.blinkit.product_service.repository.CategoryRepository;
 import com.blinkit.product_service.repository.ProductRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -82,6 +83,20 @@ public class ProductServiceImpl implements ProductService{
         return productRepository.findByCategory_CategoryId(categoryId,pageable).map(this::mapToResponse);
     }
 
+    @Transactional
+    @Override
+    public void reduceStock(Long productId, int quantity) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(()-> new RuntimeException("Product not fount"));
+
+        if(product.getQuantity()<quantity){
+            throw new RuntimeException("Insufficient stock");
+        }
+
+        product.setQuantity(product.getQuantity()-quantity);
+        productRepository.save(product);
+    }
+
 
     //method to map the data -> response
 
@@ -91,6 +106,7 @@ public class ProductServiceImpl implements ProductService{
         productResponse.productName = product.getProductName();
         productResponse.price = product.getPrice();
         productResponse.available = product.getAvailable();
+        productResponse.quantity = product.getQuantity();
         productResponse.categoryName = product.getCategory().getCategoryName();
         return productResponse;
     }

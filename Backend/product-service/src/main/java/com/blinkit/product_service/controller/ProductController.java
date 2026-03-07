@@ -27,7 +27,7 @@ public class ProductController {
         return productService.getProductById(productId);
     }
 
-    @PostMapping
+    @PostMapping("/createProduct")
     public ProductResponse createProduct(@RequestBody ProductRequest productRequest){
         return productService.createProduct(productRequest);
     }
@@ -61,5 +61,10 @@ public class ProductController {
             @RequestParam(defaultValue = "10") int size
     ){
         return productService.getProductsByCategory(categoryId,page,size);
+    }
+
+    @PutMapping("/reduce-stock/{productId}")
+    public void reduceStock(@PathVariable Long productId,@RequestParam int quantity){
+        productService.reduceStock(productId,quantity);
     }
 }
