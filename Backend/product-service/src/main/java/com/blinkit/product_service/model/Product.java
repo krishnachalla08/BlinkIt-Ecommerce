@@ -21,6 +21,8 @@ public class Product {
 
     private String description;
 
+    private String imageUrl;
+
     @Column(nullable = false)
     private BigDecimal price;
 
