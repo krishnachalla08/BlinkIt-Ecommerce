@@ -18,6 +18,8 @@ export const routes: Routes = [
 
   { path: 'orders', component: OrdersComponent },
 
-  { path: '', redirectTo: 'login', pathMatch: 'full' }
+  { path: '', redirectTo: 'register', pathMatch: 'full' },
+
+  { path: '**', redirectTo: 'register' }
 
 ];
