@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -27,13 +29,13 @@ public class AuthService {
         }
 
         User user = new User();
+        user.setName(registerRequest.getName());
         user.setEmail(registerRequest.getEmail());
         user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        if (registerRequest.isAdmin()) {
-            user.setRole(Role.ADMIN);
-        } else {
-            user.setRole(Role.USER);
-        }
+        user.setPhoneNumber(registerRequest.getPhoneNumber());
+        user.setVerified(true);
+        user.setCreatedOn(LocalDateTime.now());
+        user.setRole(registerRequest.isAdmin()?Role.ADMIN:Role.USER);
         userRepository.save(user);
     }
 
