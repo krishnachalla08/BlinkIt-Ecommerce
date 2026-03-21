@@ -1,5 +1,6 @@
 package com.blinkit.auth_service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -13,4 +14,7 @@ public class RegisterRequest {
 
     @NotBlank
     private String password;
+
+    @JsonProperty("admin")
+    private boolean isAdmin;
 }
