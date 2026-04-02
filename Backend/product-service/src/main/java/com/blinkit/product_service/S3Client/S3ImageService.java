@@ -3,6 +3,9 @@ package com.blinkit.product_service.S3Client;
 import com.blinkit.product_service.dto.S3UrlResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
+import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
@@ -18,6 +21,12 @@ public class S3ImageService {
     @Value("${aws.region}")
     private String region;
 
+    @Value("${aws.accessKey}")
+    private String accessKey;
+
+    @Value("${aws.secretKey}")
+    private String secretKey;
+
     private static final String IMAGE_BUCKET = "farmacyfresh-product-images";
 
     public S3UrlResponse getSignedS3Url(String fileName) {
@@ -27,7 +36,14 @@ public class S3ImageService {
                 .key(key)
                 .contentType("image/jpeg")
                 .build();
-        S3Presigner s3Presigner = S3Presigner.create();
+        S3Presigner s3Presigner = S3Presigner.builder()
+                .region(Region.of(region))
+                .credentialsProvider(
+                        StaticCredentialsProvider.create(
+                                AwsBasicCredentials.create(accessKey, secretKey)
+                        )
+                )
+                .build();
         PutObjectPresignRequest putObjectPresignRequest = PutObjectPresignRequest.builder()
                 .signatureDuration(Duration.ofMinutes(10L))
                 .putObjectRequest(objectRequest)

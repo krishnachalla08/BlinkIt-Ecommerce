@@ -7,9 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class S3UrlRequest {
-    @JsonProperty("file_name")
     private String fileName;
 
-    @JsonProperty("content_type")
     private String contentType;
 }

@@ -11,6 +11,7 @@ public class ProductResponse {
     public BigDecimal price;
     public Boolean available;
     public Integer quantity;
+    public String imageUrl;
     public String categoryName;
 
 }

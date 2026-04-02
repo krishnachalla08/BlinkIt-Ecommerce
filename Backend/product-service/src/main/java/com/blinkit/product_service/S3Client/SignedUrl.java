@@ -7,18 +7,17 @@ import com.blinkit.product_service.exception.ErrorResponse;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/upload")
 public class SignedUrl {
     private final S3ImageService s3ImageService;
 
-    @GetMapping("/s3/signed-url")
+    @PostMapping("/s3/signed-url")
     private Object s3Url(@RequestBody S3UrlRequest s3UrlRequest, HttpServletResponse response) {
         try {
             if (s3UrlRequest.getContentType().equals(ContentType.IMAGE.toString())) {
