@@ -6,7 +6,9 @@ import com.blinkit.product_service.exception.DuplicateResourceException;
 import com.blinkit.product_service.exception.ResourceNotFoundException;
 import com.blinkit.product_service.model.Category;
 import com.blinkit.product_service.repository.CategoryRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CategoryService {
 
+    @Autowired
     private final CategoryRepository categoryRepository;
     public CategoryResponse createCategory(CategoryRequest categoryRequest){
         if(categoryRepository.existsByCategoryName(categoryRequest.getCategoryName())){
@@ -41,5 +44,15 @@ public class CategoryService {
                 .orElseThrow(()->new ResourceNotFoundException("category not Found"));
 
         return new CategoryResponse(category.getCategoryId(),category.getCategoryName());
+    }
+
+    @Transactional
+    public void deleteCategory(Long categoryId){
+        if(categoryRepository.existsById(categoryId)){
+            categoryRepository.deleteById(categoryId);
+        }else{
+            throw new RuntimeException("category with Id "+categoryId+"is not available!");
+        }
+
     }
 }
