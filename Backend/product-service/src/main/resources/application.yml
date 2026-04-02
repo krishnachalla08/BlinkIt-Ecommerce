@@ -2,8 +2,6 @@ server:
   port: 9002
 
 spring:
-  jackson:
-    property-naming-strategy: SNAKE_CASE
   datasource:
     url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}
     username: ${DB_USERNAME}
@@ -11,11 +9,12 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
-    jpa:
-      hibernate:
-        ddl-auto: update
-      show-sql: true
-      database-platform: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQLDialect
 aws:
-  region: eu-north-1
-  cdnUrl: https://d21n11a7lmecaa.cloudfront.net
+  region: ${REGION}
+  cdnUrl: ${CDN_URL}
+  accessKey: ${ACCESS_KEY}
+  secretKey: ${SECRET_KEY}
