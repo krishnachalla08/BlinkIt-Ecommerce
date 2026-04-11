@@ -131,7 +131,7 @@ export class RegisterComponent implements OnInit {
       phoneNumber : this.phoneNumber,
       email: this.email,
       password: this.password,
-      role: this.isAdmin ? 'ADMIN' : 'USER'
+      role: this.isAdmin 
     };
 
     this.authService.register(user).subscribe({
