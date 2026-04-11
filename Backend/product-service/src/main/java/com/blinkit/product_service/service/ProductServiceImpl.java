@@ -52,6 +52,7 @@ public class ProductServiceImpl implements ProductService{
         product.setPrice(productRequest.price);
         product.setQuantity(productRequest.quantity);
         product.setAvailable(productRequest.quantity>0);
+        product.setImageUrl(productRequest.imageUrl);
         product.setCategory(category);
 
         return mapToResponse(productRepository.save(product));
@@ -107,6 +108,7 @@ public class ProductServiceImpl implements ProductService{
         productResponse.price = product.getPrice();
         productResponse.available = product.getAvailable();
         productResponse.quantity = product.getQuantity();
+        productResponse.imageUrl = product.getImageUrl();
         productResponse.categoryName = product.getCategory().getCategoryName();
         return productResponse;
     }

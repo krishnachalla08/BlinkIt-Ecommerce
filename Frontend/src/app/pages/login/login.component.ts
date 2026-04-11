@@ -26,13 +26,17 @@ export class LoginComponent {
       password:this.password
     }
 
-    this.authService.login(data).subscribe((res:any)=>{
+    this.authService.login(data).subscribe({
+      next: (res: any) => {
+        this.authService.saveToken(res.token);
+        alert('Login successful');
+        this.router.navigate(['/category']);
+      },
+      error: (err: any) => {
+        alert('Login failed: ' + (err.error?.message || err.statusText || 'Unknown error'));
+      }
+    });
 
-      this.authService.saveToken(res.token)
-
-      alert("Login successful")
-
-    })
   }
 
   register(){

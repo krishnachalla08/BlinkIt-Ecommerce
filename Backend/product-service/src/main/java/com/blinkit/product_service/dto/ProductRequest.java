@@ -7,5 +7,6 @@ public class ProductRequest {
     public String description;
     public BigDecimal price;
     public Integer quantity;
+    public String imageUrl;
     public Long categoryId;
 }

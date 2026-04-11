@@ -5,6 +5,8 @@ import { RegisterComponent } from './pages/register/register.component';
 import { ProductComponent } from './pages/products/product.component';
 import { CartComponent } from './pages/cart/cart.component';
 import { OrdersComponent } from './pages/orders/orders.component';
+import { CreateProduct } from './features/product/create-product/create-product';
+import { Category } from './features/product/category/category';
 
 export const routes: Routes = [
 
@@ -18,8 +20,7 @@ export const routes: Routes = [
 
   { path: 'orders', component: OrdersComponent },
 
-  { path: '', redirectTo: 'register', pathMatch: 'full' },
+  { path: 'createProduct', component: CreateProduct },
 
-  { path: '**', redirectTo: 'register' }
-
+  {path: 'category', component: Category }
 ];
