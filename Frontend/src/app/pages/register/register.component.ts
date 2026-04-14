@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-register',
@@ -26,7 +27,7 @@ export class RegisterComponent implements OnInit {
   passwordError: string = '';
   confirmPasswordError: string = '';
 
-  constructor(private authService: AuthService) {
+  constructor(private authService: AuthService, private router: Router) {
     console.log('RegisterComponent constructor called');
   }
 
@@ -139,11 +140,28 @@ export class RegisterComponent implements OnInit {
       next: (response) => {
         console.log("Registration successful", response);
         alert("Account created successfully");
+        
+        // Clear form fields
+        this.name = '';
+        this.phoneNumber = '';
+        this.email = '';
+        this.password = '';
+        this.confirmPassword = '';
+        this.isAdmin = false;
+        
+        // Clear error messages
+        this.phoneError = '';
+        this.emailError = '';
+        this.passwordError = '';
+        this.confirmPasswordError = '';
+        
+        // Redirect to login page
+        this.router.navigate(['/login']);
       },
 
       error: (error) => {
         console.error("Registration failed", error);
-        alert("Registration failed");
+        alert("Registration failed: " + (error.error?.message || error.statusText || 'Unknown error'));
       }
 
     });

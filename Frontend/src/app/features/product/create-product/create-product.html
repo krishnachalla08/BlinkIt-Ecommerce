@@ -1,0 +1,95 @@
+<div class="create-product-page">
+  <section class="page-hero">
+    <div class="hero-copy">
+      <span class="eyebrow">Product creation</span>
+      <h1>Create a new product</h1>
+      <p>Add details to list your product in the catalog.</p>
+    </div>
+    <div class="hero-meta">
+      <div class="meta-chip">
+        <span>Status</span>
+        <strong>Ready to create</strong>
+      </div>
+    </div>
+  </section>
+
+  <div class="content-grid">
+    <section class="panel create-panel">
+      <div class="panel-header">
+        <span class="panel-label">Product details</span>
+        <h2>Add product</h2>
+      </div>
+
+      <div class="form-layout">
+        <div class="form-fields">
+          <label class="input-group">
+            <span>Product name</span>
+            <input
+              type="text"
+              placeholder="e.g. Fresh Apples"
+              [(ngModel)]="product.productName"
+            />
+            <span class="error-message" *ngIf="errors['productName']">{{ errors['productName'] }}</span>
+          </label>
+
+          <label class="input-group">
+            <span>Description</span>
+            <input
+              type="text"
+              placeholder="Describe the product"
+              [(ngModel)]="product.description"
+            />
+            <span class="error-message" *ngIf="errors['description']">{{ errors['description'] }}</span>
+          </label>
+
+          <label class="input-group">
+            <span>Price</span>
+            <input
+              type="number"
+              placeholder="0.00"
+              [(ngModel)]="product.price"
+            />
+            <span class="error-message" *ngIf="errors['price']">{{ errors['price'] }}</span>
+          </label>
+
+          <label class="input-group">
+            <span>Quantity</span>
+            <input
+              type="number"
+              placeholder="0"
+              [(ngModel)]="product.quantity"
+            />
+            <span class="error-message" *ngIf="errors['quantity']">{{ errors['quantity'] }}</span>
+          </label>
+
+          <label class="input-group">
+            <span>Category</span>
+            <select [(ngModel)]="product.categoryId">
+              <option value="">Select a category</option>
+              <option *ngFor="let c of categories" [value]="c.categoryId">
+                {{ c.categoryName }}
+              </option>
+            </select>
+            <span class="error-message" *ngIf="errors['categoryId']">{{ errors['categoryId'] }}</span>
+          </label>
+        </div>
+
+        <div class="image-section">
+          <label class="input-group">
+            <span>Product image</span>
+            <input type="file" (change)="onFileSelected($event)" accept="image/*" />
+            <span class="error-message" *ngIf="errors['imageUrl']">{{ errors['imageUrl'] }}</span>
+          </label>
+
+          <button class="primary-btn" (click)="uploadImage()" [disabled]="uploading">
+            {{ uploading ? 'Uploading...' : 'Upload image' }}
+          </button>
+
+          <img class="preview" *ngIf="product.imageUrl" [src]="product.imageUrl" />
+        </div>
+      </div>
+
+      <button class="primary-btn save-btn" (click)="CreateProduct()">Save product</button>
+    </section>
+  </div>
+</div>

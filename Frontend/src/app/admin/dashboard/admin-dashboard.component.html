@@ -1,0 +1,68 @@
+<div class="admin-dashboard">
+  <!-- Hero Section -->
+  <div class="page-hero">
+    <div class="hero-content">
+      <h1>Admin Dashboard</h1>
+      <p>Welcome back, {{ adminName }}! Manage your store.</p>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="dashboard-content">
+    <!-- Dashboard Grid -->
+    <div class="dashboard-grid">
+      <!-- Create Category Card -->
+      <div class="dashboard-card">
+        <div class="card-icon">📁</div>
+        <h3>Create Category</h3>
+        <p>Add new product categories to your store</p>
+        <button class="primary-btn" (click)="navigateTo('/category')">Go to Categories</button>
+      </div>
+
+      <!-- Create Product Card -->
+      <div class="dashboard-card">
+        <div class="card-icon">📦</div>
+        <h3>Create Product</h3>
+        <p>Add new products with images and details</p>
+        <button class="primary-btn" (click)="navigateTo('/createProduct')">Create Product</button>
+      </div>
+
+      <!-- View Products Card -->
+      <div class="dashboard-card">
+        <div class="card-icon">🛒</div>
+        <h3>View Products</h3>
+        <p>Browse and manage all products</p>
+        <button class="primary-btn" (click)="navigateTo('/products')">View Products</button>
+      </div>
+
+      <!-- View Orders Card -->
+      <div class="dashboard-card">
+        <div class="card-icon">📋</div>
+        <h3>View Orders</h3>
+        <p>Monitor and manage customer orders</p>
+        <button class="primary-btn" (click)="navigateTo('/orders')">View Orders</button>
+      </div>
+
+      <!-- Analytics Card -->
+      <div class="dashboard-card">
+        <div class="card-icon">📊</div>
+        <h3>Analytics</h3>
+        <p>View sales and store analytics</p>
+        <button class="primary-btn" disabled>Coming Soon</button>
+      </div>
+
+      <!-- Settings Card -->
+      <div class="dashboard-card">
+        <div class="card-icon">⚙️</div>
+        <h3>Settings</h3>
+        <p>Configure store settings and preferences</p>
+        <button class="primary-btn" disabled>Coming Soon</button>
+      </div>
+    </div>
+
+    <!-- Logout Button -->
+    <div class="logout-section">
+      <button class="logout-btn" (click)="logout()">Logout</button>
+    </div>
+  </div>
+</div>
