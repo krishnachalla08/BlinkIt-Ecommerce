@@ -105,6 +105,7 @@ public class ProductServiceImpl implements ProductService{
         ProductResponse productResponse = new ProductResponse();
         productResponse.productId = product.getProductId();
         productResponse.productName = product.getProductName();
+        productResponse.description = product.getDescription();
         productResponse.price = product.getPrice();
         productResponse.available = product.getAvailable();
         productResponse.quantity = product.getQuantity();

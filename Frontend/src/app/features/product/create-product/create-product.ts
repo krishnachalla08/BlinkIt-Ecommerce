@@ -39,6 +39,7 @@ export class CreateProduct {
   ) {}
 
   ngOnInit() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.loadCategories();
   }
 

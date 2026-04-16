@@ -1,1 +1,72 @@
-<router-outlet></router-outlet>
+<div class="app">
+  <!-- Modern Header -->
+  <header class="header">
+    <div class="container">
+      <nav class="nav">
+        <div class="nav-brand">
+          <a href="/" class="brand-link">
+            <span class="brand-text">🌾 Farm N Fresh</span>
+          </a>
+        </div>
+
+        <div class="nav-links">
+          <a href="/products" class="nav-link" routerLink="/products" routerLinkActive="active">
+            Products
+          </a>
+          <a href="/cart" class="nav-link" routerLink="/cart" routerLinkActive="active">
+            Cart
+          </a>
+          <a href="/orders" class="nav-link" routerLink="/orders" routerLinkActive="active">
+            Orders
+          </a>
+        </div>
+
+        <div class="nav-actions">
+          <button class="btn btn-ghost nav-account-btn">
+            <span class="icon-circle">👤</span>
+            Account
+          </button>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main">
+    <router-outlet></router-outlet>
+  </main>
+
+  <!-- Modern Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3 class="footer-title">Farm N Fresh</h3>
+          <p class="footer-text">Your favorite quick-commerce platform</p>
+        </div>
+
+        <div class="footer-section">
+          <h4 class="footer-subtitle">Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="/products">Products</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li><a href="/orders">Orders</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-section">
+          <h4 class="footer-subtitle">Support</h4>
+          <ul class="footer-links">
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Terms of Service</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2024 Farm N Fresh. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</div>

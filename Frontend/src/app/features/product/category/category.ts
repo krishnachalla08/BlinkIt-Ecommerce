@@ -16,12 +16,12 @@ export class Category implements OnInit {
   constructor(private categoryService: CategoryService, private cd: ChangeDetectorRef) {}
 
   ngOnInit(): void {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     this.loadCategories();
   }
 
-  
-  loadCategories() {
-    this.categoryService.getAllCategories().subscribe(res => {
+  loadCategories(forceRefresh = false) {
+    this.categoryService.getAllCategories(forceRefresh).subscribe(res => {
       this.categories = res;
       this.cd.detectChanges();
     });
@@ -31,9 +31,8 @@ export class Category implements OnInit {
     if (!this.categoryName.trim()) return;
 
     this.categoryService.createCategory({ categoryName: this.categoryName }).subscribe((res: any) => {
-      this.categories.unshift(res);
       this.categoryName = '';
-      this.loadCategories();
+      this.loadCategories(true);
     });
   }
 
