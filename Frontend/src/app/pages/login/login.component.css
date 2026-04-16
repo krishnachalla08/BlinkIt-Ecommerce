@@ -26,9 +26,15 @@
 }
 
 .logo-section {
-  margin-bottom: 25px;
+  margin-bottom: 18px;
 }
 
+.logo {
+  width: 90px;
+  height: auto;
+  margin-bottom: 12px;
+  display: inline-block;
+}
 
 .logo-section h2 {
   margin: 0;

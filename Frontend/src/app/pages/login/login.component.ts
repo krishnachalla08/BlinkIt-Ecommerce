@@ -30,7 +30,13 @@ export class LoginComponent {
       next: (res: any) => {
         this.authService.saveToken(res.token);
         alert('Login successful');
-        this.router.navigate(['/category']);
+        
+        // Redirect to admin dashboard if admin, otherwise to products
+        if (this.authService.isAdmin()) {
+          this.router.navigate(['/admin-dashboard']);
+        } else {
+          this.router.navigate(['/products']);
+        }
       },
       error: (err: any) => {
         alert('Login failed: ' + (err.error?.message || err.statusText || 'Unknown error'));

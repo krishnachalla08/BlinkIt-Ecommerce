@@ -7,6 +7,9 @@ import { CartComponent } from './pages/cart/cart.component';
 import { OrdersComponent } from './pages/orders/orders.component';
 import { CreateProduct } from './features/product/create-product/create-product';
 import { Category } from './features/product/category/category';
+import { AdminDashboardComponent } from './admin/dashboard/admin-dashboard.component';
+import { AdminGuard } from './core/guards/admin.guard';
+import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.component';
 
 export const routes: Routes = [
 
@@ -20,7 +23,11 @@ export const routes: Routes = [
 
   { path: 'orders', component: OrdersComponent },
 
-  { path: 'createProduct', component: CreateProduct },
+  { path: 'unauthorized', component: UnauthorizedComponent },
 
-  {path: 'category', component: Category }
+  { path: 'admin-dashboard', component: AdminDashboardComponent, canActivate: [AdminGuard] },
+
+  { path: 'createProduct', component: CreateProduct, canActivate: [AdminGuard] },
+
+  { path: 'category', component: Category, canActivate: [AdminGuard] }
 ];
