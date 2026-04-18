@@ -1,0 +1,91 @@
+<div class="register-container">
+
+  <div class="register-card">
+
+    <div class="logo-section">
+      <img src="/FF_logo.jpg" class="logo" alt="Logo">
+      <h2>Create Account</h2>
+      <p>Join our grocery delivery platform</p>
+    </div>
+
+    <form (submit)="register()">
+
+      <div class="input-group">
+        <input
+          type="text"
+          placeholder="Full Name"
+          name="name"
+          [(ngModel)]="name"
+          required>
+      </div>
+
+      <div class="input-group">
+        <input
+          type="text"
+          placeholder="Phone Number"
+          name="phoneNumber"
+          [(ngModel)]="phoneNumber"
+          (blur)="validatePhoneNumber()"
+          pattern="[6-9][0-9]{9}"
+          required>
+        <p class="error-message" *ngIf="phoneError">{{ phoneError }}</p>
+      </div>
+
+      <div class="input-group">
+        <input
+          type="email"
+          placeholder="Email Address"
+          name="email"
+          [(ngModel)]="email"
+          (blur)="validateEmail()"
+          required>
+        <p class="error-message" *ngIf="emailError">{{ emailError }}</p>
+      </div>
+
+      <div class="input-group">
+        <input
+          type="password"
+          placeholder="Password"
+          name="password"
+          [(ngModel)]="password"
+          (blur)="validatePassword()"
+          required>
+        <p class="password-hint">Min 8 chars, uppercase, lowercase, number, special char (@$!%*?&)</p>
+        <p class="error-message" *ngIf="passwordError">{{ passwordError }}</p>
+      </div>
+
+      <div class="input-group">
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          name="confirmPassword"
+          [(ngModel)]="confirmPassword"
+          (blur)="validateConfirmPassword()"
+          required>
+        <p class="error-message" *ngIf="confirmPasswordError">{{ confirmPasswordError }}</p>
+      </div>
+
+      <div class="checkbox-group">
+        <label>
+          <input
+            type="checkbox"
+            [(ngModel)]="isAdmin"
+            name="isAdmin">
+          <span>Register as Admin</span>
+        </label>
+      </div>
+
+      <button type="submit" class="register-btn">
+        Create Account
+      </button>
+
+      <div class="login-link">
+        Already have an account?
+        <a routerLink="/login">Login</a>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

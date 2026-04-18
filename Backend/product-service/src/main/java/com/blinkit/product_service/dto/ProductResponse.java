@@ -8,9 +8,11 @@ import java.math.BigDecimal;
 public class ProductResponse {
     public Long productId;
     public String productName;
+    public String description;
     public BigDecimal price;
     public Boolean available;
     public Integer quantity;
+    public String imageUrl;
     public String categoryName;
 
 }

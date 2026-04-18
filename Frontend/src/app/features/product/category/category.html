@@ -1,0 +1,53 @@
+<div class="category-page">
+  <section class="page-hero">
+    <div class="hero-copy">
+      <span class="eyebrow">Category dashboard</span>
+      <h1>Organize your catalog by adding categories</h1>
+      <!-- <p>Fast, modern category management with clear cards, rounded edges, and a minimal admin experience.</p> -->
+    </div>
+    <div class="hero-meta">
+      <div class="meta-chip">
+        <span>Total categories</span>
+        <strong>{{ categories.length }}</strong>
+      </div>
+    </div>
+  </section>
+
+  <div class="content-grid">
+    <aside class="panel add-panel">
+      <div class="panel-header">
+        <span class="panel-label">New category</span>
+        <h2>Add category</h2>
+      </div>
+
+      <label class="input-group">
+        <span>Category name</span>
+        <div class="input-button-wrap">
+          <input
+            type="text"
+            placeholder="e.g. Fresh Vegetables"
+            [(ngModel)]="categoryName"
+          />
+          <button type="button" class="primary-btn" (click)="addCategory()">Add</button>
+        </div>
+      </label>
+    </aside>
+
+    <section class="panel list-panel">
+      <div class="panel-header">
+        <span class="panel-label">Your categories</span>
+        <h2>All categories</h2>
+      </div>
+
+      <div class="category-list">
+        <div class="category-card" *ngFor="let cat of categories; let i = index">
+          <div class="category-card-left">
+            <span class="tag">#{{ i + 1 }}</span>
+            <span class="name">{{ cat.categoryName }}</span>
+          </div>
+          <button class="delete" (click)="deleteCategory(cat.categoryId)">Delete</button>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>

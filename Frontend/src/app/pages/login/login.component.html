@@ -1,0 +1,45 @@
+<div class="login-container">
+
+  <div class="login-card">
+
+    <div class="logo-section">
+      <img src="/FF_logo.jpg" alt="Farm N Fresh Logo" class="logo">
+      <h2>Welcome Back</h2>
+      <p>Login to your Farm N Fresh account</p>
+    </div>
+
+    <form (submit)="login()">
+
+      <div class="input-group">
+        <input
+          type="email"
+          placeholder="Enter Email"
+          [(ngModel)]="email"
+          name="email"
+          required>
+      </div>
+
+      <div class="input-group">
+        <input
+          type="password"
+          placeholder="Enter Password"
+          [(ngModel)]="password"
+          name="password"
+          required>
+      </div>
+
+      <button type="submit" class="login-btn">
+        Login
+      </button>
+
+      <div class="extra-links">
+        <a (click)="register()" style="cursor: pointer;">Don't have an account? Sign Up</a>
+        <br>
+        <a (click)="forgotPassword()" style="cursor: pointer;">Forgot Password?</a>
+      </div>
+
+    </form>
+
+  </div>
+
+</div>

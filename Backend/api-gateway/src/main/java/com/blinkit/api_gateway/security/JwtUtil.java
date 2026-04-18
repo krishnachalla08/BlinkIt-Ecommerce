@@ -28,4 +28,9 @@ public class JwtUtil {
         Claims claims = validateToken(token);
         return claims.get("userId",Long.class);
     }
+
+    public String extractRole(String token) {
+        Claims claims = validateToken(token);
+        return claims.get("role",String.class);
+    }
 }

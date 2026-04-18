@@ -17,34 +17,51 @@ public class JwtAuthenticationFilter implements GlobalFilter {
     }
 
     @Override
-    public Mono<Void> filter(ServerWebExchange serverWebExchange, GatewayFilterChain gatewayFilterChain){
-        String path = serverWebExchange.getRequest().getURI().getPath();
+    public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
 
-        if(path.startsWith("/auth")){
-            return gatewayFilterChain.filter(serverWebExchange);
+        String path = exchange.getRequest().getURI().getPath();
+
+        // ✅ Allow public APIs
+        if (isPublicPath(path)) {
+            return chain.filter(exchange);
         }
 
-        String authHeader = serverWebExchange.getRequest()
+        String authHeader = exchange.getRequest()
                 .getHeaders()
                 .getFirst(HttpHeaders.AUTHORIZATION);
 
-        if(authHeader==null || !authHeader.startsWith("Bearer ")){
-            serverWebExchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return serverWebExchange.getResponse().setComplete();
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse().setComplete();
         }
 
         String token = authHeader.substring(7);
 
-        try{
+        try {
             jwtUtil.validateToken(token);
-            Long userId = jwtUtil.extractUserId(token);
 
-            ServerWebExchange modifiedExchange = serverWebExchange.mutate()
-                    .request(builder -> builder.header("X-User-Id",String.valueOf(userId))).build();
-            return gatewayFilterChain.filter(modifiedExchange);
-        }catch(Exception e){
-            serverWebExchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
-            return serverWebExchange.getResponse().setComplete();
+            Long userId = jwtUtil.extractUserId(token);
+            String role = jwtUtil.extractRole(token); // 🔥 ADD THIS
+
+            ServerWebExchange modifiedExchange = exchange.mutate()
+                    .request(builder -> builder
+                            .header("X-User-Id", String.valueOf(userId))
+                            .header("X-User-Role", role) // 🔥 IMPORTANT
+                            .header(HttpHeaders.AUTHORIZATION, authHeader) // forward token
+                    )
+                    .build();
+
+            return chain.filter(modifiedExchange);
+
+        } catch (Exception e) {
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            return exchange.getResponse().setComplete();
         }
+    }
+
+    private boolean isPublicPath(String path) {
+        return path.startsWith("/auth") ||
+                path.startsWith("/products") ||
+                path.startsWith("/categories");
     }
 }
