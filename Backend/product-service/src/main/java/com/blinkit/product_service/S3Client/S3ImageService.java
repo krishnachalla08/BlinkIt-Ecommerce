@@ -34,7 +34,7 @@ public class S3ImageService {
         PutObjectRequest objectRequest = PutObjectRequest.builder()
                 .bucket(IMAGE_BUCKET)
                 .key(key)
-                .contentType("image/jpeg")
+                .contentType("image/png")
                 .build();
         S3Presigner s3Presigner = S3Presigner.builder()
                 .region(Region.of(region))

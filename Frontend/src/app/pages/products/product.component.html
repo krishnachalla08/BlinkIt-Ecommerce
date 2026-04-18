@@ -65,7 +65,9 @@
         <div
           class="product-card-wrapper"
           *ngFor="let product of getVisibleProducts(); trackBy: trackByProductId">
-          <app-product-card [product]="product"></app-product-card>
+          <app-product-card 
+          [product]="product"
+          (quickView)="openQuickView($event)"></app-product-card>
         </div>
       </div>
 
@@ -78,3 +80,33 @@
     </div>
   </div>
 </section>
+
+<div *ngIf="selectedProduct" class="modal-overlay" (click)="closeQuickView()">
+
+  <div class="quick-view-modal" (click)="$event.stopPropagation()">
+
+    <button class="modal-close" (click)="closeQuickView()">✕</button>
+
+    <div class="modal-image">
+      <img [src]="selectedProduct.imageUrl" />
+    </div>
+
+    <div class="modal-details">
+      <h2 class="modal-title">{{ selectedProduct.productName }}</h2>
+
+      <p class="modal-description">
+        {{ selectedProduct.description }}
+      </p>
+
+      <div class="modal-price">
+        ₹{{ selectedProduct.price }}
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-add-cart">Add to Cart</button>
+        <button class="modal-wishlist">❤️</button>
+      </div>
+    </div>
+
+  </div>
+</div>

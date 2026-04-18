@@ -1,26 +1,29 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-product-card',
-  imports: [],
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './product-card.html',
   styleUrls: ['./product-card.css'],
 })
-export class ProductCard {
+export class ProductCard  {
   @Input() product: any;
+  showQuickView = false;
 
   onAddToCart(): void {
-    // TODO: Implement add to cart functionality
     console.log('Adding to cart:', this.product);
   }
 
   onToggleWishlist(): void {
-    // TODO: Implement wishlist functionality
     console.log('Toggling wishlist:', this.product);
   }
+@Output() quickView = new EventEmitter<any>();
 
-  onQuickView(): void {
-    // TODO: Implement quick view modal
-    console.log('Quick view:', this.product);
-  }
+onQuickView(): void {
+  console.log('Quick view for:', this.product);
+  this.quickView.emit(this.product);
+}
+
 }

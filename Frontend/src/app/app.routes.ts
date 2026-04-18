@@ -13,6 +13,8 @@ import { UnauthorizedComponent } from './pages/unauthorized/unauthorized.compone
 
 export const routes: Routes = [
 
+  {path: '', redirectTo: '/products', pathMatch: 'full' },
+  
   { path: 'login', component: LoginComponent },
 
   { path: 'register', component: RegisterComponent },
