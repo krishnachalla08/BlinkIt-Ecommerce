@@ -89,7 +89,12 @@
         </div>
       </div>
 
-      <button class="primary-btn save-btn" (click)="CreateProduct()">Save product</button>
+     <button 
+  class="primary-btn save-btn" 
+  (click)="CreateProduct()" 
+  [disabled]="isSaving">
+  {{ isSaving ? 'Saving...' : 'Save product' }}
+</button>
     </section>
   </div>
 </div>

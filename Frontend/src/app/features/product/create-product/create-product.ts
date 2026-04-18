@@ -25,7 +25,7 @@ export class CreateProduct {
 
   categories: any[] = [];
   loading = false;
-
+  isSaving = false;
   selectedFile!: File;
   uploading = false;
   errors: { [key: string]: string } = {};
@@ -106,21 +106,28 @@ export class CreateProduct {
   }
 
   CreateProduct() {
+    if(this.isSaving) return; // Prevent multiple submissions
+
     if (!this.validateForm()) {
       alert('Please fix the errors in the form before submitting.');
       return;
     }
 
+    this.isSaving = true;
     this.loading = true;
     this.productService.createProduct(this.product).subscribe(
       (res) => {
         alert('Product created successfully!');
         this.resetForm();
         this.loading = false;
+        this.isSaving = false;
+
       },
       (error) => {
         alert('Error creating product. Please try again.');
         this.loading = false;
+        this.isSaving = false;
+
       }
     );
   }

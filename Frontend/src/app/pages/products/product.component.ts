@@ -36,6 +36,8 @@ export class ProductComponent implements OnInit {
   error: string | null = null;
   private minLoadingTimeMs = 700;
   private loadStartTime = 0;
+  selectedProduct: any = null;
+  visibleProducts: Product[] = [];
 
   constructor(
     private productService: ProductService,
@@ -43,6 +45,17 @@ export class ProductComponent implements OnInit {
     private zone: NgZone,
     private cdr: ChangeDetectorRef
   ) {}
+
+  
+
+  openQuickView(product: any) {
+    console.log('Opening quick view for:', product);
+    this.selectedProduct = product;
+  }
+
+  closeQuickView() {
+    this.selectedProduct = null;
+  }
 
   ngOnInit(): void {
     this.loadData();
