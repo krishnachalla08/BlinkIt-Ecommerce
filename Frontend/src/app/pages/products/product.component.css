@@ -266,7 +266,8 @@
   position: fixed;
   inset: 0;
 
-  background: rgba(0, 0, 0, 0.25); /* 👈 lighter like Amazon */
+  background: rgba(0, 0, 0, 0.4); 
+  backdrop-filter: blur(5px); /* Modern glassmorphism effect */
 
   display: flex;
   align-items: center;
@@ -340,7 +341,7 @@
 .modal-price {
   font-size: 1.6rem;
   font-weight: 700;
-  color: #b12704; /* 👈 Amazon red tone */
+  color: #111827; /* Premium dark slate */
 }
 
 .modal-actions {

@@ -21,6 +21,10 @@ export class AuthService {
 
   saveToken(token:string){
     localStorage.setItem("token", token);
+    const decoded = this.decodeToken();
+    if (decoded) {
+      sessionStorage.setItem("claims", JSON.stringify(decoded));
+    }
   }
 
   getToken(){
@@ -29,6 +33,7 @@ export class AuthService {
 
   logout(){
     localStorage.removeItem("token");
+    sessionStorage.removeItem("claims");
   }
 
   decodeToken(): any {
@@ -43,6 +48,11 @@ export class AuthService {
       console.error('Error decoding token:', error);
       return null;
     }
+  }
+
+  getClaims(): any {
+    const claims = sessionStorage.getItem("claims");
+    return claims ? JSON.parse(claims) : null;
   }
 
   isLoggedIn(): boolean {
