@@ -175,6 +175,34 @@
   background: #e2e8f0;
 }
 
+/* Out of Stock Styles */
+.out-of-stock-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(220, 38, 38, 0.9);
+  color: white;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.out-of-stock-img {
+  opacity: 0.6;
+  filter: grayscale(80%);
+}
+
+.disabled-btn {
+  background: #e2e8f0 !important;
+  color: #94a3b8 !important;
+  cursor: not-allowed !important;
+  box-shadow: none !important;
+  transform: none !important;
+}
+
 @media (max-width: 768px) {
   .product-card {
     min-height: 380px;

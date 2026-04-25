@@ -1,8 +1,11 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, NgZone, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ProductService } from '../../services/product.service';
 import { CategoryService } from '../../services/category.service';
+import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 import { ProductCard } from '../../features/product/product-card/product-card';
 
 interface Category {
@@ -39,6 +42,10 @@ export class ProductComponent implements OnInit {
   selectedProduct: any = null;
   visibleProducts: Product[] = [];
 
+  private cartService = inject(CartService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   constructor(
     private productService: ProductService,
     private categoryService: CategoryService,
@@ -55,6 +62,22 @@ export class ProductComponent implements OnInit {
 
   closeQuickView() {
     this.selectedProduct = null;
+  }
+
+  addToCart(product: any): void {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    
+    if (product?.quantity === 0) {
+      return; // Prevent adding to cart if out of stock
+    }
+
+    this.cartService.addToCart(product);
+    
+    // Automatically close the modal for a smoother user experience
+    this.closeQuickView();
   }
 
   ngOnInit(): void {

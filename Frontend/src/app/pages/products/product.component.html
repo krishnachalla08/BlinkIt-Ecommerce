@@ -88,7 +88,8 @@
     <button class="modal-close" (click)="closeQuickView()">✕</button>
 
     <div class="modal-image">
-      <img [src]="selectedProduct.imageUrl" />
+      <img [src]="selectedProduct.imageUrl" [class.out-of-stock-img]="selectedProduct.quantity === 0" />
+      <div *ngIf="selectedProduct.quantity === 0" class="out-of-stock-badge">Out of Stock</div>
     </div>
 
     <div class="modal-details">
@@ -103,7 +104,12 @@
       </div>
 
       <div class="modal-actions">
-        <button class="modal-add-cart">Add to Cart</button>
+        <button class="modal-add-cart" 
+                (click)="addToCart(selectedProduct)"
+                [disabled]="selectedProduct.quantity === 0" 
+                [class.disabled-btn]="selectedProduct.quantity === 0">
+          {{ selectedProduct.quantity === 0 ? 'Out of Stock' : 'Add to Cart' }}
+        </button>
         <button class="modal-wishlist">❤️</button>
       </div>
     </div>

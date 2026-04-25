@@ -10,22 +10,41 @@
         </div>
 
         <div class="nav-links">
-          <a href="/products" class="nav-link" routerLink="/products" routerLinkActive="active">
+          <a class="nav-link" routerLink="/products" routerLinkActive="active">
             Products
           </a>
-          <a href="/cart" class="nav-link" routerLink="/cart" routerLinkActive="active">
+          <a *ngIf="isLoggedIn" class="nav-link" routerLink="/cart" routerLinkActive="active">
             Cart
           </a>
-          <a href="/orders" class="nav-link" routerLink="/orders" routerLinkActive="active">
+          <a *ngIf="isLoggedIn" class="nav-link" routerLink="/orders" routerLinkActive="active">
             Orders
           </a>
         </div>
 
-        <div class="nav-actions">
-          <button class="btn btn-ghost nav-account-btn">
+        <!-- Interactive Account Menu -->
+        <div class="nav-actions account-menu-wrapper" (click)="toggleAccountMenu()" tabindex="0" (blur)="isAccountMenuOpen = false">
+          <button class="btn btn-ghost nav-account-btn" [class.active]="isAccountMenuOpen">
             <span class="icon-circle">👤</span>
-            Account
+            <span class="account-text" *ngIf="isLoggedIn">Hi, {{ userClaims?.sub || 'User' }}</span>
+            <span class="account-text" *ngIf="!isLoggedIn">Login</span>
+            <span class="dropdown-arrow" [class.open]="isAccountMenuOpen">▼</span>
           </button>
+          
+          <!-- Dropdown -->
+          <div class="account-dropdown" *ngIf="isAccountMenuOpen" (click)="$event.stopPropagation()">
+            <div class="dropdown-header" *ngIf="isLoggedIn">
+              <strong>{{ userClaims?.sub || 'My Account' }}</strong>
+              <span class="role-badge" *ngIf="userClaims?.role === 'ADMIN' || userClaims?.role === 'admin'">Admin</span>
+            </div>
+            
+            <a *ngIf="!isLoggedIn" routerLink="/login" class="dropdown-item" (click)="toggleAccountMenu()">Login</a>
+            <a *ngIf="!isLoggedIn" routerLink="/register" class="dropdown-item" (click)="toggleAccountMenu()">Sign Up</a>
+            
+            <a *ngIf="isLoggedIn && (userClaims?.role === 'ADMIN' || userClaims?.role === 'admin')" routerLink="/admin-dashboard" class="dropdown-item" (click)="toggleAccountMenu()">Admin Dashboard</a>
+            <a *ngIf="isLoggedIn" routerLink="/orders" class="dropdown-item" (click)="toggleAccountMenu()">My Orders</a>
+            <div class="dropdown-divider" *ngIf="isLoggedIn"></div>
+            <a *ngIf="isLoggedIn" (click)="logout()" class="dropdown-item text-danger">Logout</a>
+          </div>
         </div>
       </nav>
     </div>

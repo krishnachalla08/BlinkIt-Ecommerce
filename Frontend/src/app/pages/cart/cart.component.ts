@@ -1,6 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-cart.component',
@@ -11,8 +13,15 @@ import { CartService } from '../../services/cart.service';
 })
 export class CartComponent implements OnInit {
   cartService = inject(CartService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   ngOnInit(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.cartService.loadCart();
   }
 
