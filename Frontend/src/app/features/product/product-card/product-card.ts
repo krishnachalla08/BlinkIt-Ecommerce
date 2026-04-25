@@ -1,6 +1,8 @@
 import { Component, EventEmitter, Input, Output, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { CartService } from '../../../services/cart.service';
+import { AuthService } from '../../../services/auth.service';
 
 @Component({
   selector: 'app-product-card',
@@ -14,9 +16,23 @@ export class ProductCard  {
   showQuickView = false;
   
   private cartService = inject(CartService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
+  get isOutOfStock(): boolean {
+    return this.product?.quantity === 0;
+  }
 
   onAddToCart(): void {
-    console.log('Adding to cart:', this.product);
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    
+    if (this.isOutOfStock) {
+      return; // Prevent adding to cart if out of stock
+    }
+
     this.cartService.addToCart(this.product);
   }
 
@@ -31,4 +47,3 @@ export class ProductCard  {
     this.quickView.emit(this.product);
   }
 }
-
