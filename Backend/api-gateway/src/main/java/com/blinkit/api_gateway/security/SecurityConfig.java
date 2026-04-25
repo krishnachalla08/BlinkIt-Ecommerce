@@ -12,22 +12,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) {
-        return http
-                .csrf(ServerHttpSecurity.CsrfSpec::disable)
+        http.csrf(ServerHttpSecurity.CsrfSpec::disable)
+
                 .authorizeExchange(exchange -> exchange
 
-                        // ✅ Public APIs
+
                         .pathMatchers("/auth/**").permitAll()
-                        .pathMatchers("/products/**").permitAll()
-                        .pathMatchers("/categories/**").permitAll()
-
-                        // 🔒 Protected APIs
-                        .pathMatchers("/cart/**").authenticated()
-                        .pathMatchers("/orders/**").authenticated()
-
-                        // 🔐 Everything else
-                        .anyExchange().authenticated()
-                )
-                .build();
+                        .anyExchange().permitAll()
+                );
+        return http.build();
     }
 }
