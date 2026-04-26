@@ -36,10 +36,17 @@
       </div>
 
       <div class="action-buttons">
-        <button class="add-to-cart-btn" (click)="onAddToCart()" [disabled]="isOutOfStock" [class.disabled-btn]="isOutOfStock">
+        <button class="add-to-cart-btn" (click)="onAddToCart()" *ngIf="cartQuantity === 0" [disabled]="isOutOfStock" [class.disabled-btn]="isOutOfStock">
           <span class="cart-icon" *ngIf="!isOutOfStock">🛒</span>
           {{ isOutOfStock ? 'Out of Stock' : 'Add' }}
         </button>
+
+        <div class="quantity-pill" *ngIf="cartQuantity > 0">
+          <button (click)="onDecrement()" class="qt-btn minus">-</button>
+          <span class="qt-text">{{ cartQuantity }}</span>
+          <button (click)="onIncrement()" class="qt-btn plus" [disabled]="cartQuantity >= product.quantity">+</button>
+        </div>
+
         <button class="wishlist-btn" (click)="onToggleWishlist()">
           <span class="heart-icon">❤️</span>
         </button>

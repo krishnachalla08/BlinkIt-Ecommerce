@@ -20,10 +20,12 @@
   top: calc(100% + 10px);
   right: 0;
   width: 220px;
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
-  border: 1px solid #f0f0f0;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
   overflow: hidden;
   z-index: 1000;
   animation: fadeInDown 0.2s ease-out;
@@ -31,15 +33,15 @@
 
 .dropdown-header {
   padding: 1rem;
-  background: #fcfcfc;
-  border-bottom: 1px solid #f0f0f0;
+  background: rgba(255, 255, 255, 0.4);
+  border-bottom: 1px solid var(--glass-border);
   display: flex;
   flex-direction: column;
   gap: 4px;
 }
 
 .dropdown-header strong {
-  color: #222;
+  color: var(--text-primary);
   font-size: 0.95rem;
   white-space: nowrap;
   overflow: hidden;
@@ -48,19 +50,20 @@
 
 .role-badge {
   align-self: flex-start;
-  background: #0c831f;
-  color: white;
-  font-size: 0.7rem;
+  background: var(--accent-500);
+  color: var(--text-primary);
+  font-size: 0.65rem;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: var(--radius-full);
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.15rem; /* Crystal Tech Rules */
+  text-transform: uppercase;
 }
 
 .dropdown-item {
   display: block;
   padding: 0.8rem 1rem;
-  color: #444;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 0.95rem;
   font-weight: 500;
@@ -69,23 +72,23 @@
 }
 
 .dropdown-item:hover {
-  background: #f5fbf6;
-  color: #0c831f;
+  background: var(--primary-50);
+  color: var(--primary-600);
 }
 
 .dropdown-divider {
   height: 1px;
-  background: #f0f0f0;
+  background: var(--glass-border);
   margin: 0;
 }
 
 .text-danger {
-  color: #e53935;
+  color: var(--primary-600);
 }
 
 .text-danger:hover {
-  background: #fff5f5;
-  color: #d32f2f;
+  background: var(--primary-50);
+  color: var(--primary-700);
 }
 
 @keyframes fadeInDown {
@@ -107,8 +110,10 @@
 
 /* Header Styles */
 .header {
-  background-color: var(--bg-primary);
-  border-bottom: 1px solid var(--border-light);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
   box-shadow: var(--shadow-sm);
   position: sticky;
   top: 0;
@@ -126,8 +131,8 @@
 .nav-brand .brand-link {
   text-decoration: none;
   font-size: var(--font-size-2xl);
-  font-weight: 700;
-  color: var(--primary-600);
+  font-weight: 800;
+  color: var(--primary-800);
 }
 
 .nav-links {
@@ -137,9 +142,10 @@
 }
 
 .nav-link {
-  color: var(--text-secondary);
+  color: var(--text-primary);
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.05rem;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-lg);
   transition: all var(--transition-fast);
@@ -147,13 +153,13 @@
 }
 
 .nav-link:hover {
-  color: var(--primary-600);
-  background-color: var(--primary-50);
+  color: #ffffff;
+  background-color: var(--primary-700);
 }
 
 .nav-link.active {
-  color: var(--primary-600);
-  background-color: var(--primary-50);
+  color: #ffffff;
+  background-color: var(--primary-700);
 }
 
 .nav-link.active::after {
@@ -164,7 +170,7 @@
   transform: translateX(-50%);
   width: 24px;
   height: 2px;
-  background-color: var(--primary-600);
+  background-color: var(--accent-500);
   border-radius: var(--radius-full);
 }
 
@@ -174,16 +180,32 @@
   gap: var(--space-3);
 }
 
+.nav-account-btn {
+  color: var(--text-primary);
+}
+
+.nav-account-btn:hover {
+  background-color: var(--primary-600);
+  color: #ffffff;
+}
+
+.nav-account-btn .icon-circle {
+  background-color: var(--primary-700);
+  color: var(--accent-500);
+}
+
 /* Main Content */
 .main {
   flex: 1;
-  background-color: var(--bg-secondary);
+  background-color: transparent;
 }
 
 /* Footer Styles */
 .footer {
-  background-color: var(--bg-primary);
-  border-top: 1px solid var(--border-light);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--glass-border);
   margin-top: auto;
 }
 

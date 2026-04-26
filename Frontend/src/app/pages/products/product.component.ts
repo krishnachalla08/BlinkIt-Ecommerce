@@ -41,6 +41,7 @@ export class ProductComponent implements OnInit {
   private loadStartTime = 0;
   selectedProduct: any = null;
   visibleProducts: Product[] = [];
+  totalProductsCount: number = 0;
 
   private cartService = inject(CartService);
   private authService = inject(AuthService);
@@ -75,9 +76,33 @@ export class ProductComponent implements OnInit {
     }
 
     this.cartService.addToCart(product);
-    
-    // Automatically close the modal for a smoother user experience
-    this.closeQuickView();
+  }
+
+  getCartQuantity(product: any): number {
+    if (!product) return 0;
+    const pId = product.id || product.productId;
+    const item = this.cartService.cartItems().find(i => i.productId === pId);
+    return item ? item.quantity : 0;
+  }
+
+  incrementQuantity(product: any): void {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    const qty = this.getCartQuantity(product);
+    if (qty === 0) {
+      this.addToCart(product);
+    } else {
+      this.cartService.updateQuantity(product.id || product.productId, qty + 1);
+    }
+  }
+
+  decrementQuantity(product: any): void {
+    const qty = this.getCartQuantity(product);
+    if (qty > 0) {
+      this.cartService.updateQuantity(product.id || product.productId, qty - 1);
+    }
   }
 
   ngOnInit(): void {
@@ -109,6 +134,8 @@ export class ProductComponent implements OnInit {
           console.log('Processed products:', products);
 
           this.categorizeProducts(products);
+          this.totalProductsCount = products.length;
+          this.updateVisibleProducts();
           this.loading = false;
           console.log('Data loading completed');
         });
@@ -144,12 +171,12 @@ export class ProductComponent implements OnInit {
 
   private finishLoading(action: () => void): void {
     const elapsed = Date.now() - this.loadStartTime;
-    const delay = Math.max(0, this.minLoadingTimeMs - elapsed);
+    // Skip the artificial delay if the data came from cache instantly
+    const delay = elapsed < 50 ? 0 : Math.max(0, this.minLoadingTimeMs - elapsed);
     setTimeout(() => {
       this.zone.run(() => {
         action();
         this.cdr.detectChanges();
-        console.log('finishLoading: loading=', this.loading, 'error=', this.error);
       });
     }, delay);
   }
@@ -169,18 +196,17 @@ export class ProductComponent implements OnInit {
 
   selectCategory(category: string): void {
     this.selectedCategory = category;
+    this.updateVisibleProducts();
   }
 
-  getVisibleProducts(): Product[] {
+  updateVisibleProducts(): void {
     if (this.selectedCategory === 'All') {
-      return Object.values(this.categorizedProducts).flat().concat(this.miscellaneousProducts);
+      this.visibleProducts = Object.values(this.categorizedProducts).flat().concat(this.miscellaneousProducts);
+    } else if (this.selectedCategory === 'Miscellaneous') {
+      this.visibleProducts = this.miscellaneousProducts;
+    } else {
+      this.visibleProducts = this.categorizedProducts[this.selectedCategory] || [];
     }
-
-    if (this.selectedCategory === 'Miscellaneous') {
-      return this.miscellaneousProducts;
-    }
-
-    return this.categorizedProducts[this.selectedCategory] || [];
   }
 
   getCategoryIcon(category: string): string {
@@ -200,7 +226,7 @@ export class ProductComponent implements OnInit {
 
   getCategoryCount(category: string): number {
     if (category === 'All') {
-      return Object.values(this.categorizedProducts).flat().length + this.miscellaneousProducts.length;
+      return this.totalProductsCount;
     }
     if (category === 'Miscellaneous') {
       return this.miscellaneousProducts.length;

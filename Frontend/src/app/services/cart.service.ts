@@ -24,12 +24,23 @@ export class CartService {
 
   // Helper to fetch the necessary X-User-Id header expected by the backend
   private getHeaders(): { headers: HttpHeaders } {
-    const claimsStr = sessionStorage.getItem('claims');
+    const claimsStr = localStorage.getItem('claims');
     const claims = claimsStr ? JSON.parse(claimsStr) : null;
     const sub = claims?.sub || '1'; 
     return {
       headers: new HttpHeaders().set('X-User-Id', sub)
     };
+  }
+
+  constructor() {
+    // Eagerly load the cart from session storage on instantiation
+    this.loadCart();
+  }
+
+  private syncSessionStorage() {
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem('cartItems', JSON.stringify(this.cartItems()));
+    }
   }
 
   // Automatically calculated totals
@@ -41,12 +52,29 @@ export class CartService {
     this.cartItems().reduce((sum, item) => sum + (item.price * item.quantity), 0)
   );
 
-  loadCart() {
+  loadCart(forceRefresh = false) {
+    // Check session storage first if we aren't forcing a refresh
+    if (!forceRefresh && typeof sessionStorage !== 'undefined') {
+      const cached = sessionStorage.getItem('cartItems');
+      if (cached) {
+        try {
+          this.cartItems.set(JSON.parse(cached));
+          return; // Skip API call, use cached data
+        } catch (e) {
+          console.error('Error parsing cached cart', e);
+        }
+      }
+    }
+
+    // Prevent duplicate concurrent API calls
+    if (this.isLoading()) return;
+
     this.isLoading.set(true);
     // CartController returns a CartResponse object, so we map .items (or fallback to response if it's already an array)
     this.http.get<any>(this.baseUrl, this.getHeaders()).subscribe({
       next: (response) => {
         this.cartItems.set(response.items || response);
+        this.syncSessionStorage();
         this.isLoading.set(false);
       },
       error: (err) => {
@@ -76,6 +104,7 @@ export class CartService {
             quantity: 1 
           }];
         });
+        this.syncSessionStorage();
       },
       error: (err) => console.error('Error adding to cart', err)
     });
@@ -85,6 +114,7 @@ export class CartService {
     this.http.delete(`${this.baseUrl}/${productId}`, this.getHeaders()).subscribe({
       next: () => {
         this.cartItems.update(items => items.filter(i => i.productId !== productId));
+        this.syncSessionStorage();
       },
       error: (err) => console.error('Error removing from cart', err)
     });
@@ -98,14 +128,27 @@ export class CartService {
     this.http.put(`${this.baseUrl}/update`, payload, this.getHeaders()).subscribe({
       next: () => {
         this.cartItems.update(items => items.map(i => i.productId === productId ? { ...i, quantity } : i));
+        this.syncSessionStorage();
       },
       error: (err) => console.error('Error updating quantity', err)
     });
   }
 
+  clearLocalCart() {
+    this.cartItems.set([]);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem('cartItems');
+    }
+  }
+
   clearCart() {
     this.http.delete(`${this.baseUrl}/clear`, this.getHeaders()).subscribe({
-      next: () => this.cartItems.set([]),
+      next: () => {
+        this.cartItems.set([]);
+        if (typeof sessionStorage !== 'undefined') {
+          sessionStorage.removeItem('cartItems');
+        }
+      },
       error: (err) => console.error('Error clearing cart', err)
     });
   }
