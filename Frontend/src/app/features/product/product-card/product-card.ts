@@ -23,6 +23,14 @@ export class ProductCard  {
     return this.product?.quantity === 0;
   }
 
+  get cartItem() {
+    return this.cartService.cartItems().find(item => item.productId === (this.product?.id || this.product?.productId));
+  }
+
+  get cartQuantity(): number {
+    return this.cartItem?.quantity || 0;
+  }
+
   onAddToCart(): void {
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
@@ -34,6 +42,26 @@ export class ProductCard  {
     }
 
     this.cartService.addToCart(this.product);
+  }
+
+  onIncrement(): void {
+    if (!this.authService.isLoggedIn()) {
+      this.router.navigate(['/login']);
+      return;
+    }
+    const qty = this.cartQuantity;
+    if (qty === 0) {
+      this.onAddToCart();
+    } else {
+      this.cartService.updateQuantity(this.product.id || this.product.productId, qty + 1);
+    }
+  }
+
+  onDecrement(): void {
+    const qty = this.cartQuantity;
+    if (qty > 0) {
+      this.cartService.updateQuantity(this.product.id || this.product.productId, qty - 1);
+    }
   }
 
   onToggleWishlist(): void {

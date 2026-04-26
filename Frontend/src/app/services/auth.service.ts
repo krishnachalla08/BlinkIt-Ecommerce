@@ -19,11 +19,12 @@ export class AuthService {
     return this.http.post(`${this.baseUrl}/register`, data);
   }
 
-  saveToken(token:string){
+  saveToken(token:string, name:string){
     localStorage.setItem("token", token);
+    localStorage.setItem("name", name);
     const decoded = this.decodeToken();
     if (decoded) {
-      sessionStorage.setItem("claims", JSON.stringify(decoded));
+      localStorage.setItem("claims", JSON.stringify(decoded));
     }
   }
 
@@ -31,9 +32,14 @@ export class AuthService {
     return localStorage.getItem("token");
   }
 
+  getName(){
+    return localStorage.getItem("name");
+  }
+
   logout(){
     localStorage.removeItem("token");
-    sessionStorage.removeItem("claims");
+    localStorage.removeItem("name");
+    localStorage.removeItem("claims");
   }
 
   decodeToken(): any {
@@ -51,8 +57,15 @@ export class AuthService {
   }
 
   getClaims(): any {
-    const claims = sessionStorage.getItem("claims");
-    return claims ? JSON.parse(claims) : null;
+    const claimsStr = localStorage.getItem("claims");
+    if (claimsStr) {
+      return JSON.parse(claimsStr);
+    }
+    const decoded = this.decodeToken();
+    if (decoded) {
+      localStorage.setItem("claims", JSON.stringify(decoded));
+    }
+    return decoded;
   }
 
   isLoggedIn(): boolean {

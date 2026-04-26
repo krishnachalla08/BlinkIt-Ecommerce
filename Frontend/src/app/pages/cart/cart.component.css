@@ -2,8 +2,8 @@
   max-width: 1100px;
   margin: 2rem auto;
   padding: 0 1.5rem;
-  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  color: #222;
+  font-family: var(--font-family);
+  color: var(--text-primary);
 }
 
 .page-title {
@@ -14,7 +14,7 @@
 
 .page-title span {
   font-size: 1rem;
-  color: #666;
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -34,10 +34,12 @@
 
 /* Panels */
 .cart-items-section, .summary-section {
-  background: #ffffff;
-  border-radius: 20px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
-  border: 1px solid rgba(0, 0, 0, 0.02);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
   padding: 1.5rem;
   transition: box-shadow 0.3s ease;
 }
@@ -53,7 +55,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.2rem 0;
-  border-bottom: 1px solid #f5f5f5;
+  border-bottom: 1px solid var(--glass-border);
   transition: background-color 0.2s ease;
 }
 
@@ -63,8 +65,8 @@
 }
 
 .cart-item-card:hover {
-  background-color: #fafafa;
-  border-radius: 12px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border-radius: var(--radius-xl);
   padding: 1.2rem 1rem;
   margin: 0 -1rem;
 }
@@ -79,10 +81,10 @@
   width: 70px;
   height: 70px;
   object-fit: contain;
-  border-radius: 12px;
-  background-color: #ffffff;
+  border-radius: var(--radius-xl);
+  background-color: transparent;
   padding: 0.4rem;
-  border: 1px solid #f0f0f0;
+  border: 1px solid var(--glass-border);
 }
 
 .item-name {
@@ -92,15 +94,18 @@
 }
 
 .item-weight {
-  font-size: 0.85rem;
-  color: #888;
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
   margin: 0 0 0.5rem 0;
+  text-transform: uppercase; /* All-Caps Subheaders */
+  letter-spacing: 0.15rem;
+  font-weight: 600;
 }
 
 .item-price {
   font-size: 1rem;
   font-weight: 700;
-  color: #222;
+  color: var(--text-primary);
   margin: 0;
 }
 
@@ -115,9 +120,9 @@
 .quantity-pill {
   display: flex;
   align-items: center;
-  background-color: #0c831f; /* Blinkit signature green */
-  color: white;
-  border-radius: 10px;
+  background: var(--gradient-primary);
+  color: var(--text-primary);
+  border-radius: var(--radius-lg);
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(12, 131, 31, 0.15);
 }
@@ -125,7 +130,7 @@
 .qt-btn {
   background: transparent;
   border: none;
-  color: white;
+  color: var(--text-primary);
   padding: 0.4rem 0.8rem;
   cursor: pointer;
   font-size: 1.1rem;
@@ -146,7 +151,7 @@
 .remove-link {
   background: none;
   border: none;
-  color: #e53935;
+  color: var(--primary-600);
   font-size: 0.85rem;
   cursor: pointer;
   padding: 0;
@@ -159,9 +164,12 @@
 /* Bill Summary */
 .summary-title {
   margin-top: 0;
-  font-size: 1.1rem;
-  font-weight: 700;
-  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
   padding-bottom: 1rem;
   margin-bottom: 1rem;
 }
@@ -171,19 +179,19 @@
   justify-content: space-between;
   margin-bottom: 0.8rem;
   font-size: 0.95rem;
-  color: #555;
+  color: var(--text-secondary);
 }
 
 .bill-row.delivery .free {
-  color: #0c831f;
+  color: var(--primary-600);
   font-weight: 600;
 }
 
 .bill-row.grand-total {
   font-weight: 700;
   font-size: 1.15rem;
-  color: #000;
-  border-top: 1px dashed #ddd;
+  color: var(--text-primary);
+  border-top: 1px dashed var(--border-medium);
   padding-top: 1rem;
   margin-top: 1rem;
 }
@@ -191,13 +199,14 @@
 /* Action Buttons */
 .checkout-btn {
   width: 100%;
-  background-color: #0c831f;
-  color: white;
+  background: var(--gradient-accent);
+  color: var(--text-primary);
   border: none;
   padding: 1rem;
   font-size: 1.1rem;
-  font-weight: 700;
-  border-radius: 12px;
+  font-weight: 600; /* Glow effect */
+  letter-spacing: 0.05rem;
+  border-radius: var(--radius-xl);
   cursor: pointer;
   margin-top: 1.5rem;
   box-shadow: 0 6px 16px rgba(12, 131, 31, 0.2);
@@ -205,7 +214,7 @@
 }
 
 .checkout-btn:hover {
-  background-color: #0a6c19;
+  background: var(--gradient-accent-hover);
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(12, 131, 31, 0.25);
 }
@@ -217,29 +226,32 @@
 .clear-btn {
   width: 100%;
   background: transparent;
-  color: #888;
-  border: 1px solid #ebebeb;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-medium);
   padding: 0.8rem;
   font-size: 0.95rem;
   font-weight: 500;
-  border-radius: 12px;
+  border-radius: var(--radius-xl);
   cursor: pointer;
   margin-top: 0.8rem;
   transition: background 0.2s;
 }
 
 .clear-btn:hover {
-  background: #f9f9f9;
-  color: #555;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
 /* Empty & Loading States */
 .empty-cart, .loader {
   text-align: center;
   padding: 4rem 1rem;
-  background: #fff;
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--glass-shadow);
+  border: 1px solid var(--glass-border);
 }
 
 .empty-image {
@@ -253,19 +265,24 @@
 }
 
 .empty-cart p {
-  color: #777;
+  color: var(--text-secondary);
   margin-bottom: 1.5rem;
 }
 
 .browse-btn {
-  background-color: #0c831f;
-  color: white;
+  background: var(--gradient-accent);
+  color: var(--text-primary);
   border: none;
   padding: 0.8rem 1.5rem;
   font-size: 1rem;
-  font-weight: 600;
-  border-radius: 8px;
+  font-weight: 600; /* Glow Effect */
+  letter-spacing: 0.05rem;
+  border-radius: var(--radius-lg);
   cursor: pointer;
+}
+
+.browse-btn:hover {
+  background: var(--gradient-accent-hover);
 }
 
 /* Simple CSS Spinner */
@@ -273,7 +290,7 @@
   width: 40px;
   height: 40px;
   border: 4px solid rgba(12, 131, 31, 0.2);
-  border-top-color: #0c831f;
+  border-top-color: var(--primary-500);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 1rem auto;

@@ -25,7 +25,7 @@
         <div class="nav-actions account-menu-wrapper" (click)="toggleAccountMenu()" tabindex="0" (blur)="isAccountMenuOpen = false">
           <button class="btn btn-ghost nav-account-btn" [class.active]="isAccountMenuOpen">
             <span class="icon-circle">👤</span>
-            <span class="account-text" *ngIf="isLoggedIn">Hi, {{ userClaims?.sub || 'User' }}</span>
+            <span class="account-text" *ngIf="isLoggedIn">Hi, {{ name || 'User' }}</span>
             <span class="account-text" *ngIf="!isLoggedIn">Login</span>
             <span class="dropdown-arrow" [class.open]="isAccountMenuOpen">▼</span>
           </button>

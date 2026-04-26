@@ -15,13 +15,14 @@
   width: 380px;
   padding: 40px;
 
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(15px);
+  background: var(--glass-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glass-border);
 
-  border-radius: 15px;
+  border-radius: var(--radius-2xl);
   text-align: center;
 
-  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+  box-shadow: var(--glass-shadow);
   color: white;
 }
 
@@ -55,12 +56,13 @@
   padding: 12px;
 
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
 
   outline: none;
   font-size: 14px;
 
-  background: rgba(255,255,255,0.9);
+  background: var(--bg-primary);
+  color: var(--text-primary);
 }
 
 .login-btn {
@@ -69,21 +71,22 @@
 
   margin-top: 15px;
 
-  background: #00c853;
+  background: var(--gradient-accent);
   border: none;
 
-  color: white;
+  color: var(--text-primary);
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 600; /* Glow Effect */
+  letter-spacing: 0.05rem;
 
-  border-radius: 8px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
 
   transition: 0.3s;
 }
 
 .login-btn:hover {
-  background: #00a843;
+  background: var(--gradient-accent-hover);
 }
 
 .extra-links {
@@ -91,7 +94,7 @@
 }
 
 .extra-links a {
-  color: #00d09c;
+  color: var(--accent-400);
   font-size: 13px;
   text-decoration: none;
   opacity: 1;

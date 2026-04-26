@@ -4,6 +4,7 @@ import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter } from 'rxjs/operators';
 import { AuthService } from './services/auth.service';
+import { CartService } from './services/cart.service';
 @Component({
   selector: 'app-root',
   imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
@@ -12,7 +13,8 @@ import { AuthService } from './services/auth.service';
 })
 export class App implements OnInit {
   authService = inject(AuthService);
-
+  cartService = inject(CartService);
+  name : string | null = null;
   isAccountMenuOpen = false;
   isLoggedIn = false;
   userClaims: any = null;
@@ -39,6 +41,7 @@ export class App implements OnInit {
     this.isLoggedIn = this.authService.isLoggedIn();
     if (this.isLoggedIn) {
       this.userClaims = this.authService.getClaims();
+      this.name = this.authService.getName();
     }
   }
 
@@ -48,7 +51,9 @@ export class App implements OnInit {
 
   logout() {
     this.authService.logout();
+    this.cartService.clearLocalCart();
     this.isLoggedIn = false;
+    this.name = null;
     this.userClaims = null;
     this.isAccountMenuOpen = false;
     this.router.navigate(['/login']);
