@@ -1,6 +1,7 @@
 import { Injectable, computed, signal, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
+import { Router } from '@angular/router';
 
 export interface CartItem {
   productId: number;
@@ -16,6 +17,7 @@ export interface CartItem {
 })
 export class CartService {
   private http = inject(HttpClient);
+  private router = inject(Router);
   private baseUrl = environment.apiUrl + '/cart'; // Adjust this to match your backend microservice route
 
   // Reactive state for the cart
@@ -37,9 +39,37 @@ export class CartService {
     this.loadCart();
   }
 
+  // Bind the cache to the actual user ID so users never see each other's items
+  private getCacheKey(): string {
+    let sub = 'guest';
+    if (typeof localStorage !== 'undefined') {
+      const claimsStr = localStorage.getItem('claims');
+      if (claimsStr) {
+        try {
+          sub = JSON.parse(claimsStr)?.sub || 'guest';
+        } catch(e) {}
+      }
+    }
+    return `cartItems_${sub}`;
+  }
+
   private syncSessionStorage() {
     if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.setItem('cartItems', JSON.stringify(this.cartItems()));
+      sessionStorage.setItem(this.getCacheKey(), JSON.stringify(this.cartItems()));
+    }
+  }
+
+  // A complete sweep of any left-over carts across any session
+  private wipeAllCartCaches() {
+    if (typeof sessionStorage !== 'undefined') {
+      const keysToRemove: string[] = [];
+      for (let i = 0; i < sessionStorage.length; i++) {
+        const key = sessionStorage.key(i);
+        if (key && (key === 'cartItems' || key.startsWith('cartItems_'))) {
+          keysToRemove.push(key);
+        }
+      }
+      keysToRemove.forEach(k => sessionStorage.removeItem(k));
     }
   }
 
@@ -55,7 +85,7 @@ export class CartService {
   loadCart(forceRefresh = false) {
     // Check session storage first if we aren't forcing a refresh
     if (!forceRefresh && typeof sessionStorage !== 'undefined') {
-      const cached = sessionStorage.getItem('cartItems');
+      const cached = sessionStorage.getItem(this.getCacheKey());
       if (cached) {
         try {
           this.cartItems.set(JSON.parse(cached));
@@ -136,20 +166,41 @@ export class CartService {
 
   clearLocalCart() {
     this.cartItems.set([]);
-    if (typeof sessionStorage !== 'undefined') {
-      sessionStorage.removeItem('cartItems');
-    }
+    this.wipeAllCartCaches();
   }
 
   clearCart() {
     this.http.delete(`${this.baseUrl}/clear`, this.getHeaders()).subscribe({
       next: () => {
         this.cartItems.set([]);
-        if (typeof sessionStorage !== 'undefined') {
-          sessionStorage.removeItem('cartItems');
-        }
+        this.wipeAllCartCaches();
       },
       error: (err) => console.error('Error clearing cart', err)
+    });
+  }
+
+  checkout() {
+    const options = this.getHeaders();
+    
+    // OrderController expects an Authorization header for validating the token
+    let token = 'mock-token';
+    if (typeof localStorage !== 'undefined') {
+      token = localStorage.getItem('token') || 'mock-token';
+    }
+    options.headers = options.headers.set('Authorization', `Bearer ${token}`);
+
+    // Call the order-service backend instead of just simulating with a cart clear
+    return this.http.post<any>(`${environment.apiUrl}/orders/checkout`, {}, options).subscribe({
+      next: () => {
+        this.cartItems.set([]);
+        this.wipeAllCartCaches();
+        // Redirect to orders page and pass success state
+        this.router.navigate(['/orders'], { state: { orderPlaced: true } });
+      },
+      error: (err) => {
+        console.error('Error processing checkout', err);
+        this.clearLocalCart(); // Failsafe clear local cache
+      }
     });
   }
 }

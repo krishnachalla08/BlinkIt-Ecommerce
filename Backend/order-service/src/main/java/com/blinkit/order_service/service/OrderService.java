@@ -2,10 +2,7 @@ package com.blinkit.order_service.service;
 
 import com.blinkit.order_service.client.CartClient;
 import com.blinkit.order_service.client.ProductClient;
-import com.blinkit.order_service.dto.CartDto;
-import com.blinkit.order_service.dto.CartItemDto;
-import com.blinkit.order_service.dto.OrderResponse;
-import com.blinkit.order_service.dto.ProductDto;
+import com.blinkit.order_service.dto.*;
 import com.blinkit.order_service.entity.Order;
 import com.blinkit.order_service.entity.OrderItem;
 import com.blinkit.order_service.repository.OrderRepository;
@@ -49,16 +46,17 @@ public class OrderService implements IOrderService{
 
             OrderItem orderItem = OrderItem.builder()
                     .productId(product.getProductId())
+                    .productName(product.getProductName())
                     .quantity(item.getQuantity())
                     .price(product.getPrice()).build();
             orderItems.add(orderItem);
         }
-
+        LocalDateTime localDateTime = LocalDateTime.now();
         Order order = Order.builder()
                 .userId(userId)
                 .totalAmount(total)
                 .status("CREATED")
-                .createdAt(LocalDateTime.now())
+                .createdAt(localDateTime)
                 .build();
 
         orderItems.forEach(item->item.setOrder(order));
@@ -71,10 +69,31 @@ public class OrderService implements IOrderService{
         }
 
         cartClient.clearCart(userId,token);
+        return mapToOrderResponse(saved);
+    }
+
+    @Override
+    public List<OrderResponse> getAllOrders(Long userId) {
+        List<Order> orders = orderRepository.findByUserIdOrderByCreatedAtDesc(userId);
+
+        return orders.stream().map(this::mapToOrderResponse).toList();
+    }
+
+    private OrderResponse mapToOrderResponse(Order order) {
         return OrderResponse.builder()
-                .orderId(saved.getId())
-                .totalAmount(saved.getTotalAmount())
-                .status(saved.getStatus())
+                .orderId(order.getId())
+                .totalAmount(order.getTotalAmount())
+                .status(order.getStatus())
+                .createdAt(order.getCreatedAt())
+                .orderItemList(order.getItems().stream().map(item ->
+                        OrderItemResponse.builder()
+                                .id(item.getId())
+                                .productId(item.getProductId())
+                                .productName(item.getProductName())
+                                .quantity(item.getQuantity())
+                                .price(item.getPrice())
+                                .build()
+                ).toList())
                 .build();
     }
 }

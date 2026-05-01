@@ -37,4 +37,10 @@ export class CartComponent implements OnInit {
   clearCart() {
     this.cartService.clearCart();
   }
+
+  checkout() {
+    this.cartService.checkout();
+    alert('Order placed successfully! 🚀');
+    this.router.navigate(['/orders']);
+  }
 }
