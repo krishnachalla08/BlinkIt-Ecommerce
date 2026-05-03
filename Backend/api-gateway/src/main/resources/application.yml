@@ -6,19 +6,15 @@ spring:
     gateway:
       routes:
         - id: auth-service
-          uri: http://localhost:9001
+          uri: http://auth-service:9001
           predicates:
             - Path=/auth/**
         - id: product-service
-          uri: http://localhost:9002
+          uri: http://product-service:9002
           predicates:
             - Path=/products/**,/categories/**
-        - id: order-service
-          uri: http://localhost:9003
-          predicates:
-            - Path=/orders/**
         - id: cart-service
-          uri: http://localhost:9004
+          uri: http://cart-service:9004
           predicates:
             - Path=/cart/**
 jwt:
