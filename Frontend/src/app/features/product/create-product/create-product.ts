@@ -1,9 +1,10 @@
-import { Component, ChangeDetectorRef } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit } from '@angular/core';
 import { ProductService } from '../../../services/product.service';
 import { Upload } from '../../../services/upload';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CategoryService } from '../../../services/category.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-create-product',
@@ -12,7 +13,7 @@ import { CategoryService } from '../../../services/category.service';
   templateUrl: './create-product.html',
   styleUrl: './create-product.css',
 })
-export class CreateProduct {
+export class CreateProduct implements OnInit {
   product: any = {
     productName: '',
     description: '',
@@ -39,7 +40,9 @@ export class CreateProduct {
   ) {}
 
   ngOnInit() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     this.loadCategories();
   }
 
@@ -86,15 +89,12 @@ export class CreateProduct {
 
     this.uploading = true;
     this.cd.detectChanges();
-    console.log('Selected file:', this.selectedFile);
 
     try {
-      const res: any = await this.uploadService.getSignedUrl(this.selectedFile.name, this.selectedFile.type).toPromise();
-      await this.uploadService.uploadToS3(res.signedUrl, this.selectedFile).toPromise();
+      const res: any = await firstValueFrom(this.uploadService.getSignedUrl(this.selectedFile.name, this.selectedFile.type));
+      await firstValueFrom(this.uploadService.uploadToS3(res.signedUrl, this.selectedFile));
       
       this.product.imageUrl = res.signedUrl.split('?')[0]; // Extract the URL without query parameters
-      console.log('Image uploaded successfully, file URL:', this.product.imageUrl);
-      //alert('Image uploaded successfully!');
     } catch (error) {
       console.error('Upload error:', error);
       alert('Failed to upload image. Please try again.');

@@ -21,9 +21,9 @@ export class AdminDashboardComponent {
   }
 
   loadAdminInfo() {
-    const token = this.authService.decodeToken();
-    if (token && token.name) {
-      this.adminName = token.name;
+    const name = this.authService.getName();
+    if (name) {
+      this.adminName = name;
     }
   }
 

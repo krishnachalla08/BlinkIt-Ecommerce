@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable, shareReplay } from 'rxjs';
+import { Observable, shareReplay, tap } from 'rxjs';
 import { Product } from '../models/product.model';
 
 @Injectable({
@@ -30,6 +30,8 @@ export class ProductService {
   }
 
   createProduct(product: any): Observable<any> {
-    return this.http.post(`${this.baseUrl}/createProduct`, product);
+    return this.http.post(`${this.baseUrl}/createProduct`, product).pipe(
+      tap(() => this.clearCache())
+    );
   }
 }

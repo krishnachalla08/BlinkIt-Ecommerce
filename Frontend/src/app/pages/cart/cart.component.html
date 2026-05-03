@@ -63,7 +63,7 @@
         <span>{{ cartService.totalPrice() | currency:'INR':'symbol':'1.0-0' }}</span>
       </div>
 
-      <button class="checkout-btn">Proceed to Checkout</button>
+      <button class="checkout-btn" (click)="checkout()">Proceed to Checkout</button>
       <button class="clear-btn" (click)="clearCart()">Clear Cart</button>
     </div>
 

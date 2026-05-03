@@ -19,11 +19,13 @@ public class OrderItem {
 
     private Long productId;
 
+    private String productName;
+
     private Integer quantity;
 
     private Double price;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="order_id")
     private Order order;
 }

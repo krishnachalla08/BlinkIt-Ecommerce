@@ -1,1 +1,62 @@
-<p>orders.component works!</p>
+<div class="orders-page container fade-in">
+  
+  <!-- Success Banner -->
+  <div class="success-banner" *ngIf="showSuccessMessage()">
+    <svg class="success-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" fill="var(--primary-500)"/>
+      <path d="M8 12L11 15L16 9" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <div class="success-text">
+      <h3>Order Placed Successfully!</h3>
+      <p>Thank you for shopping with us. Your items are being prepared.</p>
+    </div>
+  </div>
+
+  <div class="orders-container">
+    <h2>My Orders</h2>
+    
+    <div *ngIf="orderService.isLoading()" class="loading-state">
+      <div class="spinner"></div>
+      <p>Loading your orders...</p>
+    </div>
+
+    <div *ngIf="!orderService.isLoading() && orderService.orders().length === 0" class="no-orders">
+      <h3>No orders yet</h3>
+      <p>Looks like you haven't placed any orders yet.</p>
+    </div>
+
+    <div class="order-list" *ngIf="orderService.orders().length > 0">
+      <div class="order-card" *ngFor="let order of orderService.orders()" [class.expanded]="expandedOrders().has(order.orderId)">
+        <!-- Clickable Header -->
+        <div class="order-header" (click)="toggleOrder(order.orderId)">
+          <div class="order-info-left">
+            <span class="order-id">Order Id #{{ order.orderId }}</span>
+            <span class="order-date">{{ order.createdAt | date:'medium' }}</span>
+          </div>
+          <div class="order-info-right">
+            <span class="order-amount">{{ order.totalAmount | currency:'INR' }}</span>
+            <span class="order-status" [ngClass]="order.status.toLowerCase()">{{ order.status }}</span>
+            <span class="dropdown-icon" [class.rotated]="expandedOrders().has(order.orderId)">▼</span>
+          </div>
+        </div>
+        
+        <!-- Expandable Details -->
+        <div class="order-items-container" *ngIf="expandedOrders().has(order.orderId)">
+          <div class="order-items">
+            <div class="item" *ngFor="let item of order.orderItemList">
+              <div class="item-info">
+                <span class="item-name">{{ item.productName || 'Product #' + item.productId }}</span>
+                <span class="item-qty">Qty: {{ item.quantity }}</span>
+              </div>
+              <span class="item-price">{{ (item.price * item.quantity) | currency:'INR' }}</span>
+            </div>
+          </div>
+          <div class="order-footer">
+            <span class="total-label">Total Paid:</span>
+            <span class="total-amount">{{ order.totalAmount | currency:'INR' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

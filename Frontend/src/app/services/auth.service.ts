@@ -20,26 +20,26 @@ export class AuthService {
   }
 
   saveToken(token:string, name:string){
-    localStorage.setItem("token", token);
-    localStorage.setItem("name", name);
-    const decoded = this.decodeToken();
-    if (decoded) {
-      localStorage.setItem("claims", JSON.stringify(decoded));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem("token", token);
+      localStorage.setItem("name", name);
     }
   }
 
   getToken(){
-    return localStorage.getItem("token");
+    return typeof localStorage !== 'undefined' ? localStorage.getItem("token") : null;
   }
 
   getName(){
-    return localStorage.getItem("name");
+    return typeof localStorage !== 'undefined' ? localStorage.getItem("name") : null;
   }
 
   logout(){
-    localStorage.removeItem("token");
-    localStorage.removeItem("name");
-    localStorage.removeItem("claims");
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem("token");
+      localStorage.removeItem("name");
+      localStorage.removeItem("claims"); // Keep for cleanup of old values
+    }
   }
 
   decodeToken(): any {
@@ -49,27 +49,31 @@ export class AuthService {
     try {
       const payload = token.split('.')[1];
       const decoded = JSON.parse(atob(payload));
+
+      // Check if token is expired. The 'exp' claim is a Unix timestamp (seconds).
+      if (decoded.exp * 1000 < Date.now()) {
+        this.logout();
+        return null;
+      }
+
       return decoded;
     } catch (error) {
       console.error('Error decoding token:', error);
+      this.logout(); // Also logout on decoding error
       return null;
     }
   }
 
   getClaims(): any {
-    const claimsStr = localStorage.getItem("claims");
-    if (claimsStr) {
-      return JSON.parse(claimsStr);
-    }
-    const decoded = this.decodeToken();
-    if (decoded) {
-      localStorage.setItem("claims", JSON.stringify(decoded));
-    }
-    return decoded;
+    // Always decode the token to get fresh claims and check for expiration.
+    // The localStorage cache for claims can become stale.
+    return this.decodeToken();
   }
 
   isLoggedIn(): boolean {
-    return !!this.getToken();
+    // decodeToken will return null if the token is missing, invalid, or expired.
+    // It also handles logging out the user.
+    return !!this.decodeToken();
   }
 
   isAdmin(): boolean {

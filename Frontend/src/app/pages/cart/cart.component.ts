@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  selector: 'app-cart.component',
+  selector: 'app-cart',
   standalone: true,
   imports: [CommonModule,RouterLink],
   templateUrl: './cart.component.html',
@@ -36,5 +36,9 @@ export class CartComponent implements OnInit {
   
   clearCart() {
     this.cartService.clearCart();
+  }
+
+  checkout() {
+    this.cartService.checkout();
   }
 }

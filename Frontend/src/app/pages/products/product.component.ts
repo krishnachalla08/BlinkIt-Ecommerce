@@ -54,10 +54,8 @@ export class ProductComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  
-
+  // Opens the quick view modal for the selected product
   openQuickView(product: any) {
-    console.log('Opening quick view for:', product);
     this.selectedProduct = product;
   }
 
@@ -113,8 +111,6 @@ export class ProductComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    console.log('Starting to load data...');
-
     // Load categories and products using forkJoin for better error handling
     this.loadStartTime = Date.now();
 
@@ -123,21 +119,14 @@ export class ProductComponent implements OnInit {
       products: this.productService.getAllProducts()
     }).subscribe({
       next: (result) => {
-        console.log('API Response - Categories:', result.categories);
-        console.log('API Response - Products:', result.products);
-
         this.finishLoading(() => {
           this.categories = Array.isArray(result.categories) ? result.categories : result.categories?.content || [];
           const products = Array.isArray(result.products) ? result.products : result.products?.content || [];
-
-          console.log('Processed categories:', this.categories);
-          console.log('Processed products:', products);
 
           this.categorizeProducts(products);
           this.totalProductsCount = products.length;
           this.updateVisibleProducts();
           this.loading = false;
-          console.log('Data loading completed');
         });
       },
       error: (err) => {
@@ -150,6 +139,7 @@ export class ProductComponent implements OnInit {
     });
   }
 
+  // Groups products by their category names for easier navigation and filtering
   private categorizeProducts(products: Product[]): void {
     this.categorizedProducts = {};
     this.miscellaneousProducts = [];
@@ -169,6 +159,7 @@ export class ProductComponent implements OnInit {
     });
   }
 
+  // Applies an artificial delay to avoid rapid UI layout jitter when loading data from the cache
   private finishLoading(action: () => void): void {
     const elapsed = Date.now() - this.loadStartTime;
     // Skip the artificial delay if the data came from cache instantly
