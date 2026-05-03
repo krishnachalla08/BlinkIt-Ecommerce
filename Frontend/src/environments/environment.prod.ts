@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'http://<YOUR_EC2_PUBLIC_IP>:9000'
+  apiUrl: 'http://13.60.19.179/api'
 };
