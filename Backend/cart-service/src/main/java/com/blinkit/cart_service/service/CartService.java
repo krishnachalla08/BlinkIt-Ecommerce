@@ -52,7 +52,7 @@ public class CartService implements ICartService{
 
                     BigDecimal totalPrice = productResponse.getPrice().multiply(BigDecimal.valueOf(quantity));
 
-                    return CartItemResponse.builder().productId(productId).productName(productResponse.getProductName()).quantity(quantity).price(productResponse.getPrice()).totalPrice(totalPrice).build();
+                    return CartItemResponse.builder().productId(productId).productName(productResponse.getProductName()).imageUrl(productResponse.getImageUrl()).quantity(quantity).price(productResponse.getPrice()).totalPrice(totalPrice).build();
                 }).toList();
         BigDecimal cartTotal = items.stream().map(CartItemResponse::getTotalPrice).reduce(BigDecimal.ZERO,BigDecimal::add);
         return CartResponse.builder().userId(userId).items(items).cartTotal(cartTotal).build();

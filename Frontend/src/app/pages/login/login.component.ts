@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,8 @@ export class LoginComponent {
   password=""
 
   constructor(private authService:AuthService,
-              private router:Router){}
+              private router:Router,
+              private cartService:CartService){}
 
   login(){
 
@@ -28,7 +30,8 @@ export class LoginComponent {
 
     this.authService.login(data).subscribe({
       next: (res: any) => {
-        this.authService.saveToken(res.token);
+        this.authService.saveToken(res.token,res.name);
+        this.cartService.loadCart(true); // Fetch the newly logged-in user's cart
         alert('Login successful');
         
         // Redirect to admin dashboard if admin, otherwise to products

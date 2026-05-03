@@ -2,22 +2,8 @@
 <section class="hero">
   <div class="container">
     <div class="hero-content">
-      <h1 class="hero-title">Fresh & Fast Delivery</h1>
-      <p class="hero-subtitle">Discover amazing products delivered to your doorstep in minutes</p>
-      <div class="hero-stats">
-        <div class="stat">
-          <span class="stat-number">10K+</span>
-          <span class="stat-label">Products</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">50+</span>
-          <span class="stat-label">Categories</span>
-        </div>
-        <div class="stat">
-          <span class="stat-number">24/7</span>
-          <span class="stat-label">Service</span>
-        </div>
-      </div>
+      <h1 class="hero-title">Fresh Harvests, Delivered Directly.</h1>
+      <p class="hero-subtitle">Connecting you with local farmers to bring premium, sustainably-sourced produce straight to your door.</p>
     </div>
   </div>
 </section>
@@ -61,10 +47,10 @@
       </div>
 
       <!-- Products Grid -->
-      <div class="products-grid" *ngIf="getVisibleProducts().length > 0">
+      <div class="products-grid" *ngIf="visibleProducts.length > 0">
         <div
           class="product-card-wrapper"
-          *ngFor="let product of getVisibleProducts(); trackBy: trackByProductId">
+          *ngFor="let product of visibleProducts; trackBy: trackByProductId">
           <app-product-card 
           [product]="product"
           (quickView)="openQuickView($event)"></app-product-card>
@@ -72,7 +58,7 @@
       </div>
 
       <!-- Empty State -->
-      <div *ngIf="getVisibleProducts().length === 0" class="empty-state">
+      <div *ngIf="visibleProducts.length === 0" class="empty-state">
         <div class="empty-icon">🛒</div>
         <h3 class="empty-title">No products found</h3>
         <p class="empty-message">Try selecting a different category or check back later.</p>
@@ -88,7 +74,8 @@
     <button class="modal-close" (click)="closeQuickView()">✕</button>
 
     <div class="modal-image">
-      <img [src]="selectedProduct.imageUrl" />
+      <img [src]="selectedProduct.imageUrl" [class.out-of-stock-img]="selectedProduct.quantity === 0" />
+      <div *ngIf="selectedProduct.quantity === 0" class="out-of-stock-badge">Out of Stock</div>
     </div>
 
     <div class="modal-details">
@@ -103,7 +90,20 @@
       </div>
 
       <div class="modal-actions">
-        <button class="modal-add-cart">Add to Cart</button>
+        <button class="modal-add-cart" 
+                *ngIf="getCartQuantity(selectedProduct) === 0"
+                (click)="addToCart(selectedProduct)"
+                [disabled]="selectedProduct.quantity === 0" 
+                [class.disabled-btn]="selectedProduct.quantity === 0">
+          {{ selectedProduct.quantity === 0 ? 'Out of Stock' : 'Add to Cart' }}
+        </button>
+
+        <div class="quantity-pill modal-quantity-pill" *ngIf="getCartQuantity(selectedProduct) > 0">
+          <button (click)="decrementQuantity(selectedProduct)" class="qt-btn minus">-</button>
+          <span class="qt-text">{{ getCartQuantity(selectedProduct) }}</span>
+          <button (click)="incrementQuantity(selectedProduct)" class="qt-btn plus" [disabled]="getCartQuantity(selectedProduct) >= selectedProduct.quantity">+</button>
+        </div>
+
         <button class="modal-wishlist">❤️</button>
       </div>
     </div>

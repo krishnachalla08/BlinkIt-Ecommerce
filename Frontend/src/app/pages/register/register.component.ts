@@ -27,13 +27,9 @@ export class RegisterComponent implements OnInit {
   passwordError: string = '';
   confirmPasswordError: string = '';
 
-  constructor(private authService: AuthService, private router: Router) {
-    console.log('RegisterComponent constructor called');
-  }
+  constructor(private authService: AuthService, private router: Router) {}
 
-  ngOnInit() {
-    console.log('RegisterComponent ngOnInit called');
-  }
+  ngOnInit() {}
 
   // Validation methods
   validatePhoneNumber(): boolean {
@@ -138,7 +134,6 @@ export class RegisterComponent implements OnInit {
     this.authService.register(user).subscribe({
 
       next: (response) => {
-        console.log("Registration successful", response);
         alert("Account created successfully");
         
         // Clear form fields

@@ -1,3 +1,4 @@
+
 <div class="product-card">
   <!-- Product Image -->
   <div class="product-image">
@@ -5,7 +6,9 @@
       [src]="product.imageUrl || '/assets/images/placeholder.png'"
       [alt]="product.name"
       loading="lazy"
+      [class.out-of-stock-img]="isOutOfStock"
     />
+    <div *ngIf="isOutOfStock" class="out-of-stock-badge">Out of Stock</div>
     <div class="product-overlay">
       <button class="quick-view-btn" (click)="onQuickView()">
         👁️ Quick View
@@ -28,15 +31,20 @@
     <div class="product-footer">
       <div class="price-section">
         <span class="current-price">₹{{ product.price }}</span>
-        <!-- <span class="original-price" *ngIf="product.originalPrice">₹{{ product.originalPrice }}</span> -->
-        <!-- <span class="discount" *ngIf="product.discount">{{ product.discount }}% off</span> -->
       </div>
 
       <div class="action-buttons">
-        <button class="add-to-cart-btn" (click)="onAddToCart()">
-          <span class="cart-icon">🛒</span>
-          Add
+        <button class="add-to-cart-btn" (click)="onAddToCart()" *ngIf="cartQuantity === 0" [disabled]="isOutOfStock" [class.disabled-btn]="isOutOfStock">
+          <span class="cart-icon" *ngIf="!isOutOfStock">🛒</span>
+          {{ isOutOfStock ? 'Out of Stock' : 'Add' }}
         </button>
+
+        <div class="quantity-pill" *ngIf="cartQuantity > 0">
+          <button (click)="onDecrement()" class="qt-btn minus">-</button>
+          <span class="qt-text">{{ cartQuantity }}</span>
+          <button (click)="onIncrement()" class="qt-btn plus" [disabled]="cartQuantity >= product.quantity">+</button>
+        </div>
+
         <button class="wishlist-btn" (click)="onToggleWishlist()">
           <span class="heart-icon">❤️</span>
         </button>
