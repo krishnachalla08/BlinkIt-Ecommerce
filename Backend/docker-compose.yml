@@ -1,0 +1,53 @@
+version: '3.8'
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+
+  api-gateway:
+    image: ${DOCKER_USERNAME}/blinkit-api-gateway:latest
+    ports:
+      - "9000:9000"
+    environment:
+      - JWT_SECRET=${JWT_SECRET}
+    restart: unless-stopped
+    depends_on:
+      - auth-service
+      - product-service
+      - cart-service
+
+  auth-service:
+    image: ${DOCKER_USERNAME}/blinkit-auth-service:latest
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+    restart: unless-stopped
+
+  product-service:
+    image: ${DOCKER_USERNAME}/blinkit-product-service:latest
+    environment:
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - REGION=${REGION}
+      - CDN_URL=${CDN_URL}
+      - ACCESS_KEY=${ACCESS_KEY}
+      - SECRET_KEY=${SECRET_KEY}
+    restart: unless-stopped
+
+  cart-service:
+    image: ${DOCKER_USERNAME}/blinkit-cart-service:latest
+    environment:
+      - SPRING_REDIS_HOST=redis
+      - SPRING_REDIS_PORT=6379
+      - SPRING_DATA_REDIS_HOST=redis
+      - JWT_SECRET=${JWT_SECRET}
+    restart: unless-stopped
