@@ -11,6 +11,6 @@ RUN npm run build --configuration=production
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 # NOTE: Ensure this path matches the output folder specified in your angular.json (usually dist/<project-name>/browser)
-COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
+COPY --from=build /app/dist/Blinkit-Web/browser /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
