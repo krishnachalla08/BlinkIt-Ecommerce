@@ -29,7 +29,10 @@ export class OrderService {
   readonly isLoading = signal<boolean>(false);
 
   private getHeaders(): { headers: HttpHeaders } {
-    const claimsStr = localStorage.getItem('claims');
+    let claimsStr = null;
+    if (typeof localStorage !== 'undefined') {
+      claimsStr = localStorage.getItem('claims');
+    }
     const claims = claimsStr ? JSON.parse(claimsStr) : null;
     const sub = claims?.sub || '1'; 
     return {

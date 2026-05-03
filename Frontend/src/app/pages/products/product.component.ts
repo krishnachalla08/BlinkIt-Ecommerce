@@ -113,8 +113,6 @@ export class ProductComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    console.log('Starting to load data...');
-
     // Load categories and products using forkJoin for better error handling
     this.loadStartTime = Date.now();
 
@@ -123,21 +121,14 @@ export class ProductComponent implements OnInit {
       products: this.productService.getAllProducts()
     }).subscribe({
       next: (result) => {
-        console.log('API Response - Categories:', result.categories);
-        console.log('API Response - Products:', result.products);
-
         this.finishLoading(() => {
           this.categories = Array.isArray(result.categories) ? result.categories : result.categories?.content || [];
           const products = Array.isArray(result.products) ? result.products : result.products?.content || [];
-
-          console.log('Processed categories:', this.categories);
-          console.log('Processed products:', products);
 
           this.categorizeProducts(products);
           this.totalProductsCount = products.length;
           this.updateVisibleProducts();
           this.loading = false;
-          console.log('Data loading completed');
         });
       },
       error: (err) => {

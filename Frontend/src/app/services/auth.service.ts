@@ -20,23 +20,26 @@ export class AuthService {
   }
 
   saveToken(token:string, name:string){
-    localStorage.setItem("token", token);
-    localStorage.setItem("name", name);
-    // "claims" are now derived on-the-fly from the token to ensure they are not stale.
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem("token", token);
+      localStorage.setItem("name", name);
+    }
   }
 
   getToken(){
-    return localStorage.getItem("token");
+    return typeof localStorage !== 'undefined' ? localStorage.getItem("token") : null;
   }
 
   getName(){
-    return localStorage.getItem("name");
+    return typeof localStorage !== 'undefined' ? localStorage.getItem("name") : null;
   }
 
   logout(){
-    localStorage.removeItem("token");
-    localStorage.removeItem("name");
-    localStorage.removeItem("claims"); // Keep for cleanup of old values
+    if (typeof localStorage !== 'undefined') {
+      localStorage.removeItem("token");
+      localStorage.removeItem("name");
+      localStorage.removeItem("claims"); // Keep for cleanup of old values
+    }
   }
 
   decodeToken(): any {

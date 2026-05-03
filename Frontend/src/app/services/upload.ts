@@ -18,7 +18,6 @@ export class Upload {
   }
 
   uploadToS3(signedUrl: string, file: File) {
-    console.log('Uploading to S3 with signed URL:', signedUrl);
     return this.http.put(signedUrl, file, {
       headers:{
         'Content-Type': file.type

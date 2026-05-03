@@ -16,7 +16,7 @@ export class CategoryService {
   constructor(private http: HttpClient) {}
 
   getAllCategories(forceRefresh = false): Observable<any> {
-    if (!forceRefresh) {
+    if (!forceRefresh && typeof sessionStorage !== 'undefined') {
       const cached = sessionStorage.getItem(this.cacheKey);
       const expiry = sessionStorage.getItem(this.cacheExpiryKey);
 
@@ -49,12 +49,16 @@ export class CategoryService {
   }
 
   clearCache(): void {
-    sessionStorage.removeItem(this.cacheKey);
-    sessionStorage.removeItem(this.cacheExpiryKey);
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.removeItem(this.cacheKey);
+      sessionStorage.removeItem(this.cacheExpiryKey);
+    }
   }
 
   private setCache(data: any): void {
-    sessionStorage.setItem(this.cacheKey, JSON.stringify(data));
-    sessionStorage.setItem(this.cacheExpiryKey, (Date.now() + this.cacheTtlMs).toString());
+    if (typeof sessionStorage !== 'undefined') {
+      sessionStorage.setItem(this.cacheKey, JSON.stringify(data));
+      sessionStorage.setItem(this.cacheExpiryKey, (Date.now() + this.cacheTtlMs).toString());
+    }
   }
 }

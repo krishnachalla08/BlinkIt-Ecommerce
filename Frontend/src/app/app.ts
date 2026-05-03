@@ -49,6 +49,13 @@ export class App implements OnInit {
     this.isAccountMenuOpen = !this.isAccountMenuOpen;
   }
 
+  closeAccountMenu() {
+    // Delay closing to allow click events on dropdown items to fire and route correctly
+    setTimeout(() => {
+      this.isAccountMenuOpen = false;
+    }, 150);
+  }
+
   logout() {
     this.authService.logout();
     this.cartService.clearLocalCart();

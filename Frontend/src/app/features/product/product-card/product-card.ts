@@ -65,13 +65,12 @@ export class ProductCard  {
   }
 
   onToggleWishlist(): void {
-    console.log('Toggling wishlist:', this.product);
+    // TODO: Implement wishlist toggle functionality
   }
 
   @Output() quickView = new EventEmitter<any>();
 
   onQuickView(): void {
-    console.log('Quick view for:', this.product);
     this.quickView.emit(this.product);
   }
 }

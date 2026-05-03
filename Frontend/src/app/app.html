@@ -4,7 +4,7 @@
     <div class="container">
       <nav class="nav">
         <div class="nav-brand">
-          <a href="/" class="brand-link">
+          <a routerLink="/" class="brand-link">
             <span class="brand-text">🌾 Farm N Fresh</span>
           </a>
         </div>
@@ -22,7 +22,7 @@
         </div>
 
         <!-- Interactive Account Menu -->
-        <div class="nav-actions account-menu-wrapper" (click)="toggleAccountMenu()" tabindex="0" (blur)="isAccountMenuOpen = false">
+        <div class="nav-actions account-menu-wrapper" (click)="toggleAccountMenu()" tabindex="0" (blur)="closeAccountMenu()">
           <button class="btn btn-ghost nav-account-btn" [class.active]="isAccountMenuOpen">
             <span class="icon-circle">👤</span>
             <span class="account-text" *ngIf="isLoggedIn">Hi, {{ name || 'User' }}</span>
@@ -67,18 +67,18 @@
         <div class="footer-section">
           <h4 class="footer-subtitle">Quick Links</h4>
           <ul class="footer-links">
-            <li><a href="/products">Products</a></li>
-            <li><a href="/cart">Cart</a></li>
-            <li><a href="/orders">Orders</a></li>
+            <li><a routerLink="/products">Products</a></li>
+            <li><a routerLink="/cart">Cart</a></li>
+            <li><a routerLink="/orders">Orders</a></li>
           </ul>
         </div>
 
         <div class="footer-section">
           <h4 class="footer-subtitle">Support</h4>
           <ul class="footer-links">
-            <li><a href="#">Help Center</a></li>
-            <li><a href="#">Contact Us</a></li>
-            <li><a href="#">Terms of Service</a></li>
+            <li><a routerLink="">Help Center</a></li>
+            <li><a routerLink="">Contact Us</a></li>
+            <li><a routerLink="">Terms of Service</a></li>
           </ul>
         </div>
       </div>

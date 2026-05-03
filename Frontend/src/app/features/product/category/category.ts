@@ -16,7 +16,9 @@ export class Category implements OnInit {
   constructor(private categoryService: CategoryService, private cd: ChangeDetectorRef) {}
 
   ngOnInit(): void {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     this.loadCategories();
   }
 
