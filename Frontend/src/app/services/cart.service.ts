@@ -2,6 +2,7 @@ import { Injectable, computed, signal, inject } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Router } from '@angular/router';
+import { AuthService } from './auth.service';
 
 export interface CartItem {
   productId: number;
@@ -18,22 +19,31 @@ export interface CartItem {
 export class CartService {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private authService = inject(AuthService);
   private baseUrl = environment.apiUrl + '/cart'; // Adjust this to match your backend microservice route
 
   // Reactive state for the cart
   readonly cartItems = signal<CartItem[]>([]);
   readonly isLoading = signal<boolean>(false);
 
-  // Helper to fetch the necessary X-User-Id header expected by the backend
-  private getHeaders(): { headers: HttpHeaders } {
-    let claimsStr = null;
-    if (typeof localStorage !== 'undefined') {
-      claimsStr = localStorage.getItem('claims');
+  // Helper to fetch the necessary X-User-Id and Authorization headers expected by the backend
+  private getHeaders(): { headers: HttpHeaders } | null {
+    if (!this.authService.isLoggedIn()) {
+      return null;
     }
-    const claims = claimsStr ? JSON.parse(claimsStr) : null;
-    const sub = claims?.sub || '1'; 
+
+    const token = this.authService.getToken();
+    const claims = this.authService.getClaims();
+    const sub = claims?.sub;
+
+    if (!token || !sub) {
+      return null;
+    }
+
     return {
-      headers: new HttpHeaders().set('X-User-Id', sub)
+      headers: new HttpHeaders()
+        .set('X-User-Id', String(sub))
+        .set('Authorization', `Bearer ${token}`)
     };
   }
 
@@ -99,12 +109,21 @@ export class CartService {
       }
     }
 
+    const headers = this.getHeaders();
+    if (!headers) {
+      // If no authenticated user exists, keep the cart local only.
+      if (!this.cartItems().length) {
+        this.cartItems.set([]);
+      }
+      return;
+    }
+
     // Prevent duplicate concurrent API calls
     if (this.isLoading()) return;
 
     this.isLoading.set(true);
     // CartController returns a CartResponse object, so we map .items (or fallback to response if it's already an array)
-    this.http.get<any>(this.baseUrl, this.getHeaders()).subscribe({
+    this.http.get<any>(this.baseUrl, headers).subscribe({
       next: (response) => {
         this.cartItems.set(response.items || response);
         this.syncSessionStorage();
@@ -120,21 +139,40 @@ export class CartService {
   addToCart(product: any) {
     const pId = product.id || product.productId;
     const payload = { productId: pId, quantity: 1 };
-    
-    this.http.post(`${this.baseUrl}/add`, payload, this.getHeaders()).subscribe({
+    const headers = this.getHeaders();
+
+    if (!headers) {
+      // Guest users can still use a local cart until they sign in.
+      this.cartItems.update(items => {
+        const existingItem = items.find(i => i.productId === pId);
+        if (existingItem) {
+          return items.map(i => i.productId === pId ? { ...i, quantity: i.quantity + 1 } : i);
+        }
+        return [...items, {
+          productId: pId,
+          productName: product.name || product.productName,
+          imageUrl: product.imageUrl,
+          price: product.price,
+          quantity: 1
+        }];
+      });
+      this.syncSessionStorage();
+      return;
+    }
+
+    this.http.post(`${this.baseUrl}/add`, payload, headers).subscribe({
       next: () => {
-        // Update local signal state after successful backend call
         this.cartItems.update(items => {
           const existingItem = items.find(i => i.productId === pId);
           if (existingItem) {
             return items.map(i => i.productId === pId ? { ...i, quantity: i.quantity + 1 } : i);
           }
-          return [...items, { 
-            productId: pId, 
-            productName: product.name || product.productName, 
-            imageUrl: product.imageUrl, 
-            price: product.price, 
-            quantity: 1 
+          return [...items, {
+            productId: pId,
+            productName: product.name || product.productName,
+            imageUrl: product.imageUrl,
+            price: product.price,
+            quantity: 1
           }];
         });
         this.syncSessionStorage();
@@ -144,7 +182,14 @@ export class CartService {
   }
 
   removeFromCart(productId: number) {
-    this.http.delete(`${this.baseUrl}/${productId}`, this.getHeaders()).subscribe({
+    const headers = this.getHeaders();
+    if (!headers) {
+      this.cartItems.update(items => items.filter(i => i.productId !== productId));
+      this.syncSessionStorage();
+      return;
+    }
+
+    this.http.delete(`${this.baseUrl}/${productId}`, headers).subscribe({
       next: () => {
         this.cartItems.update(items => items.filter(i => i.productId !== productId));
         this.syncSessionStorage();
@@ -156,9 +201,16 @@ export class CartService {
   updateQuantity(productId: number, quantity: number) {
     if (quantity <= 0) return this.removeFromCart(productId);
 
+    const headers = this.getHeaders();
+    if (!headers) {
+      this.cartItems.update(items => items.map(i => i.productId === productId ? { ...i, quantity } : i));
+      this.syncSessionStorage();
+      return;
+    }
+
     // Backend maps AddToCartRequest for updates too, meaning it needs productId in the body
     const payload = { productId, quantity };
-    this.http.put(`${this.baseUrl}/update`, payload, this.getHeaders()).subscribe({
+    this.http.put(`${this.baseUrl}/update`, payload, headers).subscribe({
       next: () => {
         this.cartItems.update(items => items.map(i => i.productId === productId ? { ...i, quantity } : i));
         this.syncSessionStorage();
@@ -173,7 +225,13 @@ export class CartService {
   }
 
   clearCart() {
-    this.http.delete(`${this.baseUrl}/clear`, this.getHeaders()).subscribe({
+    const headers = this.getHeaders();
+    if (!headers) {
+      this.clearLocalCart();
+      return;
+    }
+
+    this.http.delete(`${this.baseUrl}/clear`, headers).subscribe({
       next: () => {
         this.cartItems.set([]);
         this.wipeAllCartCaches();
@@ -183,17 +241,14 @@ export class CartService {
   }
 
   checkout() {
-    const options = this.getHeaders();
-    
-    // OrderController expects an Authorization header for validating the token
-    let token = 'mock-token';
-    if (typeof localStorage !== 'undefined') {
-      token = localStorage.getItem('token') || 'mock-token';
+    const headers = this.getHeaders();
+    if (!headers) {
+      this.router.navigate(['/login']);
+      return;
     }
-    options.headers = options.headers.set('Authorization', `Bearer ${token}`);
 
     // Call the order-service backend instead of just simulating with a cart clear
-    return this.http.post<any>(`${environment.apiUrl}/orders/checkout`, {}, options).subscribe({
+    return this.http.post<any>(`${environment.apiUrl}/orders/checkout`, {}, headers).subscribe({
       next: () => {
         this.cartItems.set([]);
         this.wipeAllCartCaches();

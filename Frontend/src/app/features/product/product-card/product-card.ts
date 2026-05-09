@@ -14,6 +14,7 @@ import { AuthService } from '../../../services/auth.service';
 export class ProductCard  {
   @Input() product: any;
   showQuickView = false;
+  isWishlisted = false;
   
   private cartService = inject(CartService);
   private authService = inject(AuthService);
@@ -65,7 +66,7 @@ export class ProductCard  {
   }
 
   onToggleWishlist(): void {
-    // TODO: Implement wishlist toggle functionality
+    this.isWishlisted = !this.isWishlisted;
   }
 
   @Output() quickView = new EventEmitter<any>();

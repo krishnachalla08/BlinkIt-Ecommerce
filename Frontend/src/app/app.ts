@@ -25,7 +25,6 @@ export class App implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      console.log('Navigation ended:', event.url);
       // Dynamically check auth state on every route change
       this.checkAuthState();
     });
