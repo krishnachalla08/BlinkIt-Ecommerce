@@ -11,6 +11,10 @@ spring:
     hikari.minimum-idle: 1
     hikari.idle-timeout: 30000
     hikari.max-lifetime: 600000
+  data:
+    redis:
+      host: ${SPRING_REDIS_HOST}
+      port: ${SPRING_REDIS_PORT}
 
   jpa:
     hibernate:
@@ -18,7 +22,11 @@ spring:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQLDialect
 aws:
-  region: ${REGION}
-  cdnUrl: ${CDN_URL}
-  accessKey: ${ACCESS_KEY}
-  secretKey: ${SECRET_KEY}
+  region: ${AWS_REGION}
+  cdnUrl: ${AWS_CDN_URL}
+  accessKey: ${AWS_ACCESS_KEY_ID}
+  secretKey: ${AWS_SECRET_ACCESS_KEY}
+
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 86400000

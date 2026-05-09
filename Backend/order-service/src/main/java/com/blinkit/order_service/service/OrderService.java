@@ -26,19 +26,20 @@ public class OrderService implements IOrderService{
     @Transactional
     public OrderResponse checkout(Long userId,String token) {
 
-        CartDto cart = cartClient.getCart(userId,token);
-        if(cart==null || cart.getItems().isEmpty()){
+        CartDto cart = cartClient.getCart(userId, token);
+        if (cart == null || cart.getItems() == null || cart.getItems().isEmpty()) {
             throw new RuntimeException("Cart is Empty");
         }
 
         double total = 0;
         List<OrderItem> orderItems = new ArrayList<>();
 
-        for(CartItemDto item : cart.getItems()){
-            ProductDto product = productClient.getProduct(item.getProductId(),token);
-
-            System.out.println(product);
-            if(product.getQuantity()<item.getQuantity()){
+        for (CartItemDto item : cart.getItems()) {
+            ProductDto product = productClient.getProduct(item.getProductId(), token);
+            if (product == null) {
+                throw new RuntimeException("Product not found");
+            }
+            if (product.getQuantity() < item.getQuantity()) {
                 throw new RuntimeException("Product out of stock");
             }
 
