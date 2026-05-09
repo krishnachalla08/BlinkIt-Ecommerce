@@ -45,11 +45,3 @@ services:
       - SECRET_KEY=${SECRET_KEY}
     restart: unless-stopped
 
-  cart-service:
-    image: ${DOCKER_USERNAME}/blinkit-cart-service:latest
-    environment:
-      - SPRING_REDIS_HOST=redis
-      - SPRING_REDIS_PORT=6379
-      - SPRING_DATA_REDIS_HOST=redis
-      - JWT_SECRET=${JWT_SECRET}
-    restart: unless-stopped
