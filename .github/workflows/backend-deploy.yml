@@ -94,12 +94,16 @@ jobs:
           JWT_SECRET=${{ secrets.JWT_SECRET }}
           EOF
           
-          # Stop and remove legacy container if it exists
+          # Clean up legacy container
           docker stop blinkit-backend || true
           docker rm blinkit-backend || true
           
+          # Stop all currently running services from this compose file
+          docker-compose down --remove-orphans || true
+          
+          # Aggressively prune old images, volumes, and networks to free up disk space BEFORE pulling
+          docker system prune -a --volumes -f
+          
           # Start all microservices using docker-compose
           docker-compose pull
-          docker-compose up -d
-          
-          docker image prune -f
+          docker-compose up -d --remove-orphans
