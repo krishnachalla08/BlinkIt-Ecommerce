@@ -45,6 +45,7 @@ jobs:
         build-args: SERVICE_NAME=product-service
         tags: ${{ secrets.DOCKER_USERNAME }}/blinkit-product-service:latest
 
+
     - name: Copy docker-compose to EC2
       uses: appleboy/scp-action@v0.1.4
       with:
