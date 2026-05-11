@@ -16,7 +16,6 @@ services:
     depends_on:
       - auth-service
       - product-service
-      - cart-service
 
   auth-service:
     image: ${DOCKER_USERNAME}/blinkit-auth-service:latest
@@ -44,5 +43,7 @@ services:
       - AWS_ACCESS_KEY_ID=${ACCESS_KEY}
       - AWS_SECRET_ACCESS_KEY=${SECRET_KEY}
       - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - redis
     restart: unless-stopped
 
