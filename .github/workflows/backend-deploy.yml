@@ -103,8 +103,17 @@ jobs:
           docker-compose down --remove-orphans || true
           
           # Forcefully kill any process bound to port 6379 (Redis) or 9000 (API Gateway)
-          sudo fuser -k 6379/tcp || true
-          sudo fuser -k 9000/tcp || true
+          sudo fuser -k -9 6379/tcp || true
+          sudo fuser -k -9 9000/tcp || true
+          
+          # Fallback: if fuser fails or isn't installed, use lsof to find the PID and kill it
+          if command -v lsof > /dev/null; then
+            sudo lsof -t -i:6379 | sudo xargs -r kill -9 || true
+            sudo lsof -t -i:9000 | sudo xargs -r kill -9 || true
+          fi
+          
+          # Ultimate fallback: Restart the Docker daemon to clear hung docker-proxy processes
+          sudo systemctl restart docker || true
           
           # Aggressively prune old images, volumes, and networks to free up disk space BEFORE pulling
           docker system prune -a --volumes -f
