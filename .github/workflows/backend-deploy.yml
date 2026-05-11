@@ -101,6 +101,10 @@ jobs:
           # Stop all currently running services from this compose file
           docker-compose down --remove-orphans || true
           
+          # Forcefully kill any process bound to port 6379 (Redis) or 9000 (API Gateway)
+          sudo fuser -k 6379/tcp || true
+          sudo fuser -k 9000/tcp || true
+          
           # Aggressively prune old images, volumes, and networks to free up disk space BEFORE pulling
           docker system prune -a --volumes -f
           
