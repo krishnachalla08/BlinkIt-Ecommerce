@@ -39,9 +39,10 @@ services:
       - DB_PASSWORD=${DB_PASSWORD}
       - SPRING_REDIS_HOST=redis
       - SPRING_REDIS_PORT=6379
-      - REGION=${REGION}
-      - CDN_URL=${CDN_URL}
-      - ACCESS_KEY=${ACCESS_KEY}
-      - SECRET_KEY=${SECRET_KEY}
+      - AWS_REGION=${REGION}
+      - AWS_CDN_URL=${CDN_URL}
+      - AWS_ACCESS_KEY_ID=${ACCESS_KEY}
+      - AWS_SECRET_ACCESS_KEY=${SECRET_KEY}
+      - JWT_SECRET=${JWT_SECRET}
     restart: unless-stopped
 
