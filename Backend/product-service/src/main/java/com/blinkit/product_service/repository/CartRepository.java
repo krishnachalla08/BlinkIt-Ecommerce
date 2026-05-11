@@ -9,18 +9,18 @@ import java.util.Map;
 public class CartRepository {
 
     private final RedisTemplate<String, Object> redisTemplate;
-    private static final String CART_KEY_PREFIX = "cart:";
+    private static final String CART_KEY_PREFIX = "cart:user:";
 
     public CartRepository(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 
     public void addOrUpdate(String userId, Long productId, Integer quantity) {
-        redisTemplate.opsForHash().put(CART_KEY_PREFIX + userId, String.valueOf(productId), String.valueOf(quantity));
+        redisTemplate.opsForHash().put(CART_KEY_PREFIX + userId, productId.toString(), quantity);
     }
 
     public void removeItem(String userId, Long productId) {
-        redisTemplate.opsForHash().delete(CART_KEY_PREFIX + userId, String.valueOf(productId));
+        redisTemplate.opsForHash().delete(CART_KEY_PREFIX + userId, productId.toString());
     }
 
     public Map<Object, Object> getCart(String userId) {

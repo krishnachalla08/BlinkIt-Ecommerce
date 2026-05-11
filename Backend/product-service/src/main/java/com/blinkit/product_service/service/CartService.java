@@ -20,12 +20,8 @@ public class CartService implements ICartService{
 
     @Override
     public void addItem(String userId, Long productId, Integer quantity, String token) {
-        try {
-            productService.getProductById(productId);
-            cartRepository.addOrUpdate(userId, productId, quantity);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to add item to cart", e);
-        }
+        productService.getProductById(productId);
+        cartRepository.addOrUpdate(userId, productId, quantity);
     }
 
     @Override
